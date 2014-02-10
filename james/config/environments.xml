@@ -29,8 +29,8 @@
 			<key name="mode" value="development" />
 			
 			<key name="S3ContentCDNBucketname" value="tunesbag-cdn" set="true" scope="application" />
-			<key name="AWSAccessKeyId" value="AKIAJW2SJGBS6PQMOV7A" set="true" scope="application" />
-			<key name="AWSsecretAccessKey" value="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" set="true" scope="application" />
+			<key name="AWSAccessKeyId" value="xxx" set="true" scope="application" />
+			<key name="AWSsecretAccessKey" value="xxx" set="true" scope="application" />
 			<key name="AWSCFCDNHostname" value="tunesbag-cdn.s3.amazonaws.com" set="true" scope="application" />
 			
 			<key name="EHCacheDefaultURL" value="http://localhost:8090/ehcache/rest/sampleCache2/" set="true" scope="application" />
@@ -39,38 +39,22 @@
 			<key name="DefaultSimpleCacheTimeoutMin" value="0" set="true" scope="application" />
 			
 			<!-- dropbox -->
-			<key name="DropBoxConsumerKey" value="oxy8drnqpefd29d" set="true" />
-			<key name="DropBoxConsumerToken" value="dji21o1jh8xkhw6" />
+			<key name="DropBoxConsumerKey" value="xxx" set="true" />
+			<key name="DropBoxConsumerToken" value="xxx" />
 			
 			<!-- box.net-->
-			<key name="BoxNetSecret" value="j9ahr3kzftqnh3o7y2z5lbc0iteip2fl" />
+			<key name="BoxNetSecret" value="xxx" />
 			
 			<!-- rd.io -->
-			<key name="rdioKey" value="9fy4xc9rzrywvyf8q6ysnjnj" />
-			<key name="rdioSharedSecret" value="Zbq6n9nmBx" />
-			
-			<!-- musixmatch -->
-			<key name="MusixMatchAppID" value="f455f0f6" />
-			<key name="MusixMatchAppKey" value="1d46e96bb1404be944b52dc805984eaf" />
-			
-			<!-- netflix -->
-			<key name="NetflixKey" value="fhgfmtvmsa3q2z9fc3fvqe7a" />
-			<key name="NetflixSecret" value="WDZjtBNNb6" />
-			
-			<!-- medianet integrator would be 65wFWuzupQRw9oCqVSpUal9E7 / gugpBOmivXz -->
-			<key name="MediaNetAPIKey" value="Mh8tg0uugkU5hwmBiBF5uQBgA" />
-			<key name="MediaNetSecret" value="EoyVr9MDRwZ" />
+			<key name="rdioKey" value="xxx" />
+			<key name="rdioSharedSecret" value="xxx" />
 			
 			<!-- soundcloud -->
-			<key name="SoundCloudClientID" value="PQX5WshG0Fh65cO2GYQlw" />
-			<key name="SoundCloudClientSecret" value="jfyat8CIwxYgHBWZUZdjOSSR2CqNiavbUTDTTD9dvA" />
+			<key name="SoundCloudClientID" value="xxx" />
+			<key name="SoundCloudClientSecret" value="xxx" />
 			
 			<!-- echonest -->
-			<key name="EchonestAPIKey" value="5NFWO3Z5PXELC3M0O" />
-			
-			<!-- rovi -->
-			<key name="RoviAPIKey" value="jz28g72kbwsqhhg77ua2s843" />
-			<key name="RoviAPISecret" value="8wweRRR26g" />
+			<key name="EchonestAPIKey" value="xxx" />
 			
 			<!-- values migrated from /etc/tunesbag.properties -->
 			<key name="TempDirectory" value="/tmp/" />
@@ -78,13 +62,10 @@
 			
 			<key name="ContentDirectory" value="/var/tb_content/" />
 			
-			<key name="fb_fbml_url" value="http://apps.facebook.com/tunesbagdev/" />
+			<key name="fb_fbml_url" value="http://apps.facebook.com/xxxx/" />
 			
 			<key name="WSServer" value="ws://stage.tunesbag.com:10129/" />
 			
-			<!-- engagement -->
-			<key name="ConnectAPIAccessKey" value="1289" />
-			<key name="ConnectAPISecret" value="secret" />
 		</set>
 		
 		<!-- production SET -->
@@ -94,24 +75,17 @@
 			
 			<!--  s3 properties -->
 			<key name="S3ContentCDNBucketname" value="tunesbagcdn" set="true" scope="application" />
-			<key name="AWSAccessKeyId" value="00ESBY7Q19D2CVZ9BZR2" set="true" scope="application" />
-			<key name="AWSsecretAccessKey" value="zgiwCcqzbqsQ+MOPA/j/pZtbxx+hM4TDJoUz0amM" set="true" scope="application" />
+			<key name="AWSAccessKeyId" value="xxx" set="true" scope="application" />
+			<key name="AWSsecretAccessKey" value="xxx+xx/j/xxx+x" set="true" scope="application" />
 			
 			<!-- CDN Hostname -->
 			<key name="AWSCFCDNHostname" value="deliver.tunesBagCDN.com" set="true" scope="application" />
 			
 			
 			<!--  last.fm -->
-			<key name="lastfmapikey" value="974c3a90ce72420f3ae51b39a1acd3f3" />
-			<key name="lastfmapisecret" value="c6fb84c66e59e1e499411fff9c224c3a" />
+			<key name="lastfmapikey" value="xxx" />
+			<key name="lastfmapisecret" value="xxx" />
 			
-			<!-- musixmatch -->
-			<key name="MusixMatchAppID" value="f455f0f6" />
-			<key name="MusixMatchAppKey" value="1d46e96bb1404be944b52dc805984eaf" />
-			
-			<!-- medianet -->
-			<key name="MediaNetAPIKey" value="Mh8tg0uugkU5hwmBiBF5uQBgA" />
-			<key name="MediaNetSecret" value="EoyVr9MDRwZ" />
 			
 			<!-- various -->
 			<key name="DefaultQuota" value="1073741824" />
@@ -119,57 +93,30 @@
 			<!-- EH Caching server lives on database02 -->
 			<key name="EHCacheDefaultURL" value="http://database02:8080/ehcache/rest/sampleCache2/" set="true" scope="application" />
 			
-			<!-- paypal stuff -->
-			<key name="PPServerURL" value="https://api-3t.paypal.com/nvp" />
-			<key name="PPAPIuserName" value="office_api1.tunesBag.com" />
-			<key name="PPAPIPassword" value="J4GCZ788ZLXL8X9E" />
-			<key name="PPAPISignature" value="AnzXLU85-P08YyPmJ.zf.Gm438XJALUPy29-cZU61g98EocTnpn74zBX" />
-			<key name="PayPalURL" value="https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&amp;token=" />
-			<key name="PayPalVersion" value="55.0" />
-			
 			<!-- cache timeouts -->
 			<key name="DefaultQueryCacheMin" value="5" set="true" scope="application" />
 			<key name="DefaultSimpleCacheTimeoutMin" value="5" set="true" scope="application" />
 			
 			<!-- dropbox -->
-			<key name="DropBoxConsumerKey" value="oxy8drnqpefd29d" />
-			<key name="DropBoxConsumerToken" value="dji21o1jh8xkhw6" />
-			
-			<!-- box.net-->
-			<key name="BoxNetSecret" value="j9ahr3kzftqnh3o7y2z5lbc0iteip2fl" />
-			
-			<!-- netflix -->
-			<key name="NetflixKey" value="fhgfmtvmsa3q2z9fc3fvqe7a" />
-			<key name="NetflixSecret" value="WDZjtBNNb6" />
+			<key name="DropBoxConsumerKey" value="xxx" />
+			<key name="DropBoxConsumerToken" value="xxx" />
 			
 			<!-- soundcloud -->
-			<key name="SoundCloudClientID" value="PQX5WshG0Fh65cO2GYQlw" />
-			<key name="SoundCloudClientSecret" value="jfyat8CIwxYgHBWZUZdjOSSR2CqNiavbUTDTTD9dvA" />
+			<key name="SoundCloudClientID" value="xxxx" />
+			<key name="SoundCloudClientSecret" value="xxxx" />
 
 			<!-- echonest -->
 			<key name="EchonestAPIKey" value="5NFWO3Z5PXELC3M0O" />			
-			
-			<!-- rovi -->
-			<key name="RoviAPIKey" value="jz28g72kbwsqhhg77ua2s843" />
-			<key name="RoviAPISecret" value="8wweRRR26g" />
-			
-			<!-- rd.io -->
-			<key name="rdioKey" value="9fy4xc9rzrywvyf8q6ysnjnj" />
-			<key name="rdioSharedSecret" value="Zbq6n9nmBx" />
 			
 			<!-- various properties -->
 			<key name="TempDirectory" value="/tmp/" />
 			<key name="JavaBin" value="java" />
 			<key name="ContentDirectory" value="/var/tb_content/" />
 			
-			<key name="fb_fbml_url" value="http://apps.facebook.com/tunesbag/" />
+			<key name="fb_fbml_url" value="http://apps.facebook.com/app1/" />
 			
 			<key name="WSServer" value="ws://www-server1.tunesbag.com:10129/" />
 			
-			<!-- engagement -->
-			<key name="ConnectAPIAccessKey" value="1289" />
-			<key name="ConnectAPISecret" value="secret" />			
-		
 		</set>
 	</propertiessets>
 
@@ -195,11 +142,9 @@
 			
 			
 			<!-- very default tracking codes-->
-			<key name="GoogleAnalyticsCode" value="UA-2984227-4" set="true" scope="application" />
-			<key name="GoogleAnalyticsCodeSubscribers" value="UA-2984227-1" set="true" scope="application" />
+			<key name="GoogleAnalyticsCode" value="UA-xxxx-4" set="true" scope="application" />
+			<key name="GoogleAnalyticsCodeSubscribers" value="UA-xxxx-1" set="true" scope="application" />
 			<key name="GoogleAnalyticsDomains" value=".tunesbag.com" set="true" scope="application" />
-			<key name="PiwikSiteID" value="1" set="true" scope="application" />
-			<key name="PiwikSiteIDSubscribers" value="1" set="true" scope="application" />
 			
 		</properties>
 	</item>
@@ -238,7 +183,7 @@
 		
 		<properties>
 			<key name="defaultlanguage" value="de" set="true" scope="application" />
-			<key name="GoogleAnalyticsCode" value="UA-2984227-12" set="true" scope="application" />
+			<key name="GoogleAnalyticsCode" value="UA-xxxx-12" set="true" scope="application" />
 			<key name="GoogleAnalyticsDomains" value=".tunesbag.at" set="true" scope="application" />
 			<key name="PiwikSiteID" value="6" set="true" scope="application" />
 		</properties>
