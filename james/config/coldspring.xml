@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	
+	Define beans
+
+-->
+
+<beans default-autowire="byName">
+
+	<!-- transfer CFC -->
+	<bean id="ContentTransfer" class="transfer.TransferFactory">
+	   <constructor-arg name="datasourcePath"><value>/james/config/transfer/content/datasource.xml</value></constructor-arg>
+	   <constructor-arg name="configPath"><value>/james/config/transfer/content/transfer.xml</value></constructor-arg>
+	   <constructor-arg name="definitionPath"><value>/tb_temp/</value></constructor-arg>
+	</bean>
+	
+	<!-- external content -->
+	<bean id="ExtContentTransfer" class="transfer.TransferFactory">
+	   <constructor-arg name="datasourcePath"><value>/james/config/transfer/extcontent/datasource.xml</value></constructor-arg>
+	   <constructor-arg name="configPath"><value>/james/config/transfer/extcontent/transfer.xml</value></constructor-arg>
+	   <constructor-arg name="definitionPath"><value>/tb_temp/</value></constructor-arg>
+	</bean>	
+	
+	<bean id="UsersTransfer" class="transfer.TransferFactory">
+	   <constructor-arg name="datasourcePath"><value>/james/config/transfer/users/datasource.xml</value></constructor-arg>
+	   <constructor-arg name="configPath"><value>/james/config/transfer/users/transfer.xml</value></constructor-arg>
+	   <constructor-arg name="definitionPath"><value>/tb_temp/</value></constructor-arg>
+	</bean>
+	
+	<bean id="LogTransfer" class="transfer.TransferFactory">
+	   <constructor-arg name="datasourcePath"><value>/james/config/transfer/logging/datasource.xml</value></constructor-arg>
+	   <constructor-arg name="configPath"><value>/james/config/transfer/logging/transfer.xml</value></constructor-arg>
+	   <constructor-arg name="definitionPath"><value>/tb_temp/</value></constructor-arg>
+	</bean>
+	
+	<bean id="MBTransfer" class="transfer.TransferFactory">
+	   <constructor-arg name="datasourcePath"><value>/james/config/transfer/musicbrainz/datasource.xml</value></constructor-arg>
+	   <constructor-arg name="configPath"><value>/james/config/transfer/musicbrainz/transfer.xml</value></constructor-arg>
+	   <constructor-arg name="definitionPath"><value>/tb_temp/</value></constructor-arg>
+	</bean>
+	
+	<!-- official user component -->
+	<bean id="UserComponent" class="james.cfc.users.users" />
+	<bean id="IdentitiesComponent" class="james.cfc.users.identities" />
+	
+	<!-- media items -->
+	<bean id="MediaItemsComponent" class="james.cfc.content.mediaitems" />
+	<bean id="PlaylistsComponent" class="james.cfc.content.playlists" />	
+	<bean id="CacheComponent" class="james.cfc.content.cache" />
+	<bean id="AudioConverter" class="james.cfc.content.formats.AudioConverter" />
+	
+	<bean id="MessagesComponent" class="james.cfc.messages.messages" />
+	
+	<!-- content (general) -->
+	<bean id="ContentComponent" class="james.cfc.content.content" />
+	<bean id="SEO" class="james.cfc.content.seo" />
+	
+	<!-- internal UI -->
+	<bean id="UIComponent" class="james.cfc.content.ui" />
+	
+	<!-- storage cmp -->
+	<bean id="StorageComponent" class="james.cfc.storage.storage" />
+	
+	<!-- MB cmp -->
+	<bean id="MusicBrainz" class="james.cfc.content.musicbrainz" />
+	
+	<!-- security -->
+	<bean id="SecurityComponent" class="james.cfc.security.security" />
+	
+	<!-- Licence -->
+	<bean id="LicenceComponent" class="james.cfc.licence.licence" />
+	
+	<!-- tools -->
+	<bean id="Tools" class="james.cfc.tools.tools" />
+	<bean id="SimpleCache" class="james.cfc.tools.simplecache" />
+	
+	<bean id="SimpleEHCache" class="james.cfc.tools.simplecache">
+		<constructor-arg name="sEngine"><value>ehcache</value></constructor-arg>
+	</bean>
+	
+	<!-- image utils -->
+	<bean id="imageUtils" class="james.cfc.tools.imageUtils" />
+	
+	<!-- Upload component -->
+	<bean id="UploadComponent" class="james.cfc.storage.upload" />
+	
+	<!--  java loader -->
+	<bean id="JavaLoader" class="james.cfc.tools.javaloader.JavaLoader"  />
+	
+	<!--  addressbook importer -->
+	<bean id="AddressbookImporter" class="james.cfc.social.importaddressbook.importaddressbook" />
+	
+	<!-- Logger component -->
+	<bean id="LogComponent" class="james.cfc.log.log" />
+	
+	<!-- server management -->
+	<bean id="Server" class="james.cfc.server.server" />
+	
+	<!-- SHOP -->
+	<bean id="ShopComponent" class="james.cfc.shop.shop" />
+	<bean id="ShopPayPalComponent" class="james.cfc.shop.paypal" />
+	
+	<!-- S3 component -->
+	<bean id="AWSS3" class="james.cfc.storage.s3">
+		<constructor-arg name="accessKeyId"><value></value></constructor-arg>
+	   <constructor-arg name="secretAccessKey"><value></value></constructor-arg>
+	</bean>
+	
+	<bean id="RemoteService" class="james.cfc.content.remoteservice" />
+	<bean id="RemoteServiceLibraryParser" class="james.cfc.content.remoteservice.libraryparser" />
+	
+	<!-- i18n components -->
+	<bean id="translang" class="james.cfc.i18n.lang" />
+	<bean id="javaRB" class="james.cfc.i18n.javaRB" />
+	
+	<!-- general social cmp -->
+	<bean id="SocialComponent" class="james.cfc.social.social" />
+	<bean id="YouTubeComponent" class="james.cfc.social.youtube" />
+	<bean id="TwitterComponent" class="james.cfc.social.twitter" />
+	<bean id="EventsComponent" class="james.cfc.social.events" />	
+	<bean id="LastFMComponent" class="james.cfc.social.lastfm" />
+	<bean id="FacebookComponent" class="james.cfc.social.facebook" />
+	<bean id="BlogsComponent" class="james.cfc.social.blogs" />
+	<bean id="Songkick" class="james.cfc.tools.songkick" />
+	
+	<!-- API -->
+	<bean id="RestAPIComponent" class="james.cfc.api.restapi" />
+	
+	<!--  widget -->
+	<bean id="WidgetComponent" class="james.cfc.api.widget" />
+	
+	<bean id="FacebookFBMLComponent" class="james.cfc.social.facebookfbml">
+		<constructor-arg name="apiKey"><value>845ab6a56a4d53c1da0e88d4dfd261ea</value></constructor-arg>
+		<constructor-arg name="secret"><value>bef27bc6827699644b3a87b7790bf3d7</value></constructor-arg>
+		<constructor-arg name="url"><value>http://apps.facebook.com/tunesbagdev/</value></constructor-arg>
+		<constructor-arg name="callbackUrl"><value>http://83.64.213.25:8030/james/tests/fbapp/</value></constructor-arg>
+	</bean>
+	
+	<!--  flickr -->
+	<bean id="Flickr" class="james.cfc.tools.flickr"></bean>
+	
+	<!-- google tools -->
+	<bean id="GoogleTools" class="james.cfc.tools.googletools"></bean>
+	
+	<!-- comments -->
+	<bean id="CommentsComponent" class="james.cfc.content.comments" />
+	
+	<!-- branding -->
+	<bean id="Environments" class="james.cfc.content.environments">
+		<constructor-arg name="sXMLEnvironmentsFile"><value>config/environments.xml</value></constructor-arg>
+	</bean>
+	
+	
+	<!-- sync service for various sources + services -->
+	<bean id="Sync" class="james.cfc.content.sync"></bean>
+	
+	<!-- dropbox -->
+	<bean id="dropbox" class="james.cfc.content.providers.dropbox" />
+	
+	<!-- twilio -->
+	<bean id="twilio" class="james.cfc.tools.twilio" />
+	
+	<!-- 8tracks -->
+	<bean id="8tracks" class="james.cfc.content.providers.8tracks" />
+	<bean id="MP3Tunes" class="james.cfc.content.providers.mp3tunes">
+		<constructor-arg name="sPartnerToken"><value>2229607957</value></constructor-arg>
+	</bean>	
+		
+</beans>

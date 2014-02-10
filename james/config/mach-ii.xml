@@ -1,0 +1,1215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mach-ii PUBLIC
+	"-//Mach-II//DTD Mach-II Configuration 1.1.1//EN"
+	"http://www.mach-ii.com/dtds/mach-ii_1_1_1.dtd">
+
+<mach-ii version="1.0">
+
+	<!-- PROPERTIES -->
+	<properties>
+		<property name="applicationRoot" value="/james"/>
+		<property name="defaultEvent" value="info.service.welcome"/>
+		<property name="eventParameter" value="event"/>
+		<property name="parameterPrecedence" value="form"/>
+		<property name="maxEvents" value="10"/>
+		<property name="exceptionEvent" value="exception"/>
+		
+		<!-- use app scope for caching when performing redirects -->
+		<property name="redirectPersistScope" value="application" />
+		
+		<!-- disable mach-ii logging ... only makes troubles -->
+		<property name="loggingEnabled" value="false" />
+		
+		<!-- Application variables -->
+		<property name="ColdSpringPropertyFilename" value="config/coldspring.xml" />
+    	<property name="dsn_library" value="mytunesbutler" />
+    	<property name="version" value="0.1" />
+    	<property name="tempdir_mapping" value="/tb_temp" />
+    	<property name="transfer_config_mapping" value="/tb_transfer_config/" />
+		<property name="upload_base_directory" value="/Users/hansjorgposch/Documents/workspace/TunesButler/upload_test/" />
+		<!-- number of invitations per user -->
+		<property name="invitations_per_user" value="20" />
+		
+		<!-- supported languages  fr et -->
+		<property name="supported_languages" value="en,de" />
+		
+		<!-- es,nl,pl,pt_br,it,ru,tr,zh_cn -->
+		
+		<!-- supported TLDs at the moment -->
+		<property name="supported_tlds" value="com,co.uk,at,de,es,be,it,cn,ru" />
+		
+		<!-- const - this satellite is handling streaming stuff -->
+		<property name="I_CONST_SATELLITE_TYPE_STREAMING" value="2" />
+		
+		<!-- people can upload to this server -->
+		<property name="I_CONST_SATELLITE_TYPE_UPLOAD" value="3" />
+		
+		<!-- default webserver -->
+		<property name="I_CONST_WEB_CONTENT_SERVER" value="1" />
+		
+		<!-- min version of upload app needed ... currently 1.2.0.1 -->
+		<property name="I_MIN_VERSION_UPLOADER_WIN32" value="1020001" />
+		
+		<!-- image sizes to generate -->
+		<property name="S_IMG_DEFAULT_SIZES" value="30,48,75,120,300" />
+		
+					
+	</properties>
+
+	<!-- LISTENERS -->
+	<listeners>
+	    <listener name="SecurityGuard" type="james.model.security.security" />
+	    <listener name="Logger" type="james.model.logger.logger" />
+	   	<listener name="Users" type="james.model.user.users" />
+		<listener name="Social" type="james.model.user.social" />
+	   	<listener name="Preference" type="james.model.user.preference" />
+		<listener name="LastFM" type="james.model.external.lastfm" />
+		<listener name="YT" type="james.model.external.youtube" />
+		<listener name="MediaItems" type="james.model.content.mediaitems" />
+		<listener name="RemoteServers" type="james.model.content.remoteservers" />
+		<listener name="PublicInfo" type="james.model.content.publicinfo" />
+		<listener name="MusicBrainz" type="james.model.content.musicbrainz" />
+		<listener name="StorageManager" type="james.model.storage.storage" />
+		<listener name="Provisioning" type="james.model.provisioning.provisioning" />
+		<listener name="PageContent" type="james.model.content.pagecontent" />
+		<listener name="UploadManager" type="james.model.storage.upload" />
+		<listener name="UIBgActions" type="james.model.ui.bgactions" />
+		<listener name="Comments" type="james.model.content.comments" />
+		<listener name="Widget" type="james.model.api.widget" />
+		<listener name="Events" type="james.model.content.events" />
+		<listener name="RESTAPI" type="james.model.api.api_rest" />
+		<listener name="Shop" type="james.model.shop.shop" />
+		<listener name="boxee" type="james.model.api.boxee" />
+		<listener name="licence" type="james.model.licence.licence" />
+	</listeners>
+	
+	<!-- EVENT-FILTERS -->
+	<event-filters>
+		<!--
+		<event-filter name="yourEventFilterName" type="fully.Qualified.Dot.Delimited.Path.To.CFC">
+			<parameters>
+				<parameter name="yourParameterName" value="yourParameterValue" />
+			</parameters>
+		</event-filter>
+		-->
+	</event-filters>
+
+	<!-- EVENT-HANDLERS -->
+	
+	
+	<!-- WWW -->
+	<event-handlers>
+		
+		<event-handler event="ShowLibrary" access="public">
+			<notify listener="Preference" method="LoadAllStoredUserPreferences" />
+			<notify listener="Preference" method="LoadCustomDesignElementData" />
+			<notify listener="Users" method="GetUserData" />
+			<event-arg name="layoutEvent" value="layout.library" />
+			<view-page name="showlibrary"/>
+		</event-handler>
+		
+		<!-- testing new layout -->
+		<event-handler event="home" access="public">
+			
+			<event-arg name="layoutEvent" value="layout.w10" />
+			
+			<view-page name="home" />
+		</event-handler>
+		
+		<!-- user info page -->
+		<event-handler event="user.info" access="public">
+			<!-- start with default layout event -->
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+						
+			<!-- check for special public access (/user/myusername/) -->
+			<notify listener="PublicInfo" method="CheckPublicUserInfo" />
+			<notify listener="Logger" method="LogProfileVisit" />
+			<notify listener="SecurityGuard" method="CheckPublicAccess" />
+			<!-- get entrykey -->
+			<notify listener="Users" method="GetUserEntrykeyByUsername" /> 
+			<notify listener="Users" method="GetUserProfile" /> 
+		
+			<notify listener="Logger" method="GetLastUserActivities" />			
+			<view-page name="user.info" /> 
+		</event-handler> 
+		
+		<!-- short user info page on the right -->
+		<event-handler event="user.info.short" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="SecurityGuard" method="CheckPublicAccess" />
+			<!-- get entrykey -->
+			<notify listener="Users" method="GetUserEntrykeyByUsername" /> 
+			<notify listener="Users" method="GetUserProfile" /> 
+			<view-page name="user.info.short" /> 
+		</event-handler> 		
+		
+		<!-- request remote key -->
+		<event-handler event="user.api.requestremotekey" access="public">
+			<notify listener="RESTAPI" method="GetAllEnabledApplications" />
+			<notify listener="RESTAPI" method="CheckIssueRemoteKey" />
+			<view-page name="user.api.requestremotekey" />			
+		</event-handler>
+
+		
+		<!-- playments / upgrade -->
+		<event-handler event="user.account.upgrade.select" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="Shop" method="GetPlans" />
+			<notify listener="Users" method="GetUserData" />
+			<view-page name="user.account.upgrade.select" />
+		</event-handler>
+		
+		<event-handler event="user.account.upgrade" access="public">
+			<event-arg name="options_footer" value="minimal" />
+			<notify listener="Shop" method="HandleUpgradePlanSelect" />
+			<view-page name="user.account.upgrade" />
+		</event-handler>
+		
+		
+		<!-- confirmation box -->
+		<event-handler event="user.account.upgrade.confirmation" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="user.account.upgrade.confirmation" />
+		</event-handler>
+		
+		<event-handler event="user.account.upgrade.paypal.expresscheckout.details" access="public">
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<notify listener="Shop" method="PayPalGetExpressCheckoutDetails" />
+			<view-page name="user.account.upgrade.paypal.expresscheckout.details" />
+		</event-handler>
+		
+		<event-handler event="user.account.upgrade.paypal.expresscheckout.performpayment" access="public">
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<notify listener="Shop" method="PayPalCreateRecurringPaymentsProfile" />
+		</event-handler>
+		
+		<!--  ok! -->
+		<event-handler event="user.account.upgrade.paypal.expresscheckout.success" access="public">
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<notify listener="Shop" method="GetPaymentRecurringProfileDetails" />
+			<view-page name="user.account.upgrade.paypal.expresscheckout.performpayment" />
+		</event-handler>
+		
+		<!--		
+			something has failed ...			
+			 -->
+		<event-handler event="user.account.upgrade.paypal.expresscheckout.failure" access="public">
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<view-page name="user.account.upgrade.paypal.expresscheckout.failure" />
+		</event-handler>
+		
+		<!-- google ad -->
+		<event-handler event="public.adframe" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />			
+			<view-page name="public.adframe" />
+		</event-handler>
+		
+		<event-handler event="public.aff.request" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="Shop" method="HandleAffiliateHit" />
+			<view-page name="public.aff.request" />
+		</event-handler>
+		
+		<!-- status info (single status) -->
+		<event-handler event="public.info.status" access="public">
+			<event-arg name="layoutEvent" value="layout.iframe" />
+			<notify listener="PublicInfo" method="CheckPublicStatusInfo" />	
+
+			<notify listener="Logger" method="getSingleStatusLogItem" />					
+			<view-page name="public.info.status" />
+		</event-handler>
+		
+		<!-- jobs -->
+		<event-handler event="public.info.jobs" access="public">
+			<view-page name="public.info.jobs" />
+		</event-handler>
+		
+		<!-- iphone info page -->
+		<event-handler event="public.info.iphone" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="public.info.iphone" />			
+		</event-handler>
+		
+		<!-- login handler -->
+		<event-handler event="showLoginForm" access="public"> 
+			<notify listener="SecurityGuard" method="checkSendLoginInformation" />
+			<notify listener="Users" method="CheckLoadExternalAccountBinding" />
+			<view-page name="loginForm" /> 
+		</event-handler> 
+		
+		<event-handler event="processLoginAttempt" access="public">
+			<notify listener="SecurityGuard" method="validateLogin" />
+		</event-handler>
+		
+		<!-- check login coming from rpxnow (landing) -->
+		<event-handler event="login.rpxnow.landing" access="public">
+			<notify listener="Users" method="CheckRPXLoginLanding" />
+			<view-page name="login.rpxnow.landing" />			
+		</event-handler>
+		
+		<event-handler event="login.rpxnow.handleLinkAccountsRequest" access="private">
+			<notify listener="Users" method="CheckRPXLinkAccount" />
+			<view-page name="login.rpxnow.check" />
+		</event-handler>
+		
+		<event-handler event="login.Succeeded" access="private"> 
+			<notify listener="SecurityGuard" method="SetSessionVariables" />
+			<notify listener="SecurityGuard" method="LogLogin" />
+			<notify listener="Users" method="CheckCreateExternalAccountBinding" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="ui.login.success" />
+		</event-handler> 
+		
+		<event-handler event="login.Failed" access="private"> 
+			<announce event="showLoginForm" copyEventArgs="true" /> 
+		</event-handler>
+		
+		<event-handler event="register.start" access="public">
+			<notify listener="Users" method="CheckInvitationkey" />
+			<notify listener="Users" method="SignupUserCheckExternalDataSource" />
+			<view-page name="register.start" />
+		</event-handler>
+		
+		<event-handler event="register.externalsource.finish" access="public">	
+			
+			<notify listener="Users" method="CheckExternalSignupCreateAccount" />
+			<notify listener="Users" method="SignupUserCheckExternalDataSource" />
+			
+			<view-page name="register.externalsource.finish" />
+		</event-handler>
+		
+		<!-- try to create a new user -->
+		<event-handler event="register.AttempRegistration" access="public"> 
+			<notify listener="Users" method="CreateUser" />
+		</event-handler>
+		
+		<!-- register failed ... go back to main reg page again Private only! -->
+		<event-handler event="register.failed" access="private"> 
+			<event-arg name="layoutEvent" value="layout.main" />
+			<announce event="register.start" copyEventArgs="true" />
+		</event-handler>
+		
+		<!--- success ... Private only! -->
+		<event-handler event="register.success" access="private">
+			<event-arg name="layoutEvent" value="layout.main" />
+			<view-page name="register.waiting.confirmation" />
+		</event-handler>	
+		
+		<!-- user has clicked on confirmation mail -->
+		<event-handler event="register.confirmaccount" access="public">
+			<notify listener="Users" method="checkAccountConfirmation" />
+			<view-page name="register.confirmaccount" />
+		</event-handler>
+		
+		<!-- success! -->
+		<event-handler event="register.confirmaccount.success" access="private">
+			<event-arg name="disableLayoutManager" value="true" />
+			
+			<!-- create user context and login -->
+			<notify listener="SecurityGuard" method="SetSessionVariables" />
+			<notify listener="Users" method="GetUserData" />
+			
+			<view-page name="register.first.login" />
+		</event-handler>
+		
+		<!-- upload processing unit is asking for help -->
+		<event-handler event="remote.incoming.request" access="public">
+			<notify listener="RemoteServers" method="CheckValidRequestServerSource" />
+			<notify listener="RemoteServers" method="HandleIncomingSlaveStatusInformation" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="remote.incoming.checkrequest" />
+		</event-handler>		
+		
+		<!-- remote calc of puid is done -->
+		<event-handler access="public" event="remote.puid.calculated">
+			<notify listener="RemoteServers" method="CheckValidRequestServerSource" />
+			<notify listener="RemoteServers" method="HandleIncomingPUIDDataCalculated" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="remote.puid.calculated" />
+		</event-handler>
+		
+		<!-- upload form -->
+		<event-handler event="media.upload" access="public">
+			<!-- load various user data -->
+			<notify listener="Users" method="GetUserData" />
+			<notify listener="UploadManager" method="IssueUploadAuthkey" />
+			<notify listener="UploadManager" method="GetProcessingQueue" />
+			<notify listener="StorageManager" method="CheckStorageLimit" />
+
+			<!-- load plists -->
+			<event-arg name="type" value="playlists" />
+			<event-arg name="calculateitems" value="false" />
+			<notify listener="MediaItems" method="GetUserContentData" />
+			
+			<event-arg name="layoutEvent" value="layout.iframe" />
+	    	<view-page name="media.upload" />
+		</event-handler>
+		
+		<!-- lookup media item -->
+		<event-handler event="media.lookupitem" access="public">
+			<notify listener="MediaItems" method="LookupItem" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="media.lookupitem" />
+		</event-handler>
+		
+		<!-- edit id3 tag information -->
+		<event-handler event="media.edittaginfo" access="public">
+			<event-arg name="GetMediaItemReason" value="edit" />
+			<notify listener="MediaItems" method="GetFullGenreList" />
+			<notify listener="MediaItems" method="getMediaItemsByEntrykeys" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+	    	<view-page name="media.edittaginfo" />
+		</event-handler>	
+		
+		<!-- auto correct -->
+		<event-handler event="media.autocorrect" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="MusicBrainz" method="LoadNextAutoCorrectData" />
+			<view-page name="media.autocorrect" />
+		</event-handler>
+				
+		
+		<!-- synchronize the database ... -->
+		<event-handler event="data.syncdb" access="public">
+			<event-arg name="skipLayoutEvent" value="true" />
+			<notify listener="Social" method="CheckGetSocialSyncData" />
+			<notify listener="MediaItems" method="GetUserContentData" />
+			<!--  provide licence information -->
+			<notify listener="Licence" method="generateLicencePermission" />
+			<view-page name="data.syncdb" />
+		</event-handler>
+		
+		<!-- search for data (on server-side, output will be done by default routines) -->
+		<event-handler event="data.search" access="public">
+			<event-arg name="skipLayoutEvent" value="true" />
+			<notify listener="MediaItems" method="SearchUserContentData" />
+			<!-- <event-arg name="contentType" value="text/xml; charset=UTF-8" /> -->
+			<view-page name="data.syncdb" />
+		</event-handler>
+		
+		<!-- user preferences -->
+		<event-handler event="user.preferences" access="public" >
+			<notify listener="Users" method="CheckStoreUserData" />
+			<notify listener="PageContent" method="CheckChangePicture" />
+			<notify listener="Users" method="ChangeChangeLanguage" />
+			<notify listener="Preference" method="CheckStoreUserPreferences" />
+			<notify listener="Preference" method="LoadAllStoredUserPreferences" />
+			<notify listener="Users" method="GetUserData" />
+			<notify listener="Social" method="LoadExternalSiteIDs" />
+			<event-arg name="layoutEvent" value="layout.iframe" />
+			<view-page name="user.preferences" />
+		</event-handler>
+		
+		<!--  password change -->
+		<event-handler event="user.preferences.changepassword" access="public">
+			<notify listener="Users" method="CheckPasswordChangeRequest" />
+			<event-arg name="layoutEvent" value="layout.iframe" />
+			<view-page name="user.preferences.changepassword"/>
+		</event-handler>
+		
+		<!-- image updata / upload -->
+		<event-handler event="user.content.imageupload" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="PageContent" method="CheckChangePicture" />
+			<view-page name="user.content.imageupload" />
+		</event-handler>
+		
+		<event-handler event="user.preferences.addexternalid" access="public">
+			<notify listener="Preference" method="CheckStoreUserPreferences" />
+			<notify listener="Preference" method="LoadAllStoredUserPreferences" />
+			<notify listener="Social" method="CheckStoreExternalSiteID" />
+			<notify listener="Users" method="GetUserData" />
+			<notify listener="Social" method="LoadExternalSiteIDs" />
+			<event-arg name="layoutEvent" value="layout.iframe" />
+			<view-page name="user.preferences.addexternalid" />
+		</event-handler>
+		
+		
+		<event-handler event="user.social.friends" access="public">
+			<notify listener="Social" method="LoadExternalSiteIDs" />
+			<notify listener="Social" method="GetWaitingFriendShipRequests" />
+			<notify listener="Social" method="GetFriendsList" />
+			<!-- load possible friends -->
+			<notify listener="Users" method="checkExternalIdentifierData" />
+			<notify listener="Preference" method="LoadAllStoredUserPreferences" />
+			<notify listener="Users" method="GetUserData" />
+
+			<!-- load follow stream playlist -->
+			<event-arg name="playlistkey" value="followstream" />
+			<notify listener="MediaItems" method="ReturnPlaylistItems" />		
+			
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="user.social.friends" />
+		</event-handler>	
+		
+		<!-- display friends (edit) ... -->
+		<event-handler event="user.social.friends.edit" access="public">
+			<notify listener="Social" method="LoadExternalSiteIDs" />
+			<notify listener="Social" method="GetWaitingFriendShipRequests" />
+			<notify listener="Social" method="GetFriendsList" />
+			<notify listener="Preference" method="LoadAllStoredUserPreferences" />
+			<notify listener="Users" method="GetUserData" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="user.social.friends.edit" />
+		</event-handler>	
+		
+		<event-handler event="user.social.friend" access="public">
+			<notify listener="Social" method="LoadExternalSiteIDs" />
+			<!--<notify listener="Social" method="GetFriendsList" />-->
+			<notify listener="Social" method="GetFriend" />
+			<notify listener="Preference" method="LoadAllStoredUserPreferences" />
+			<notify listener="Users" method="GetUserData" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="user.social.friend" />
+		</event-handler>		
+		
+		<!-- logout -->
+		<event-handler event="user.logout" access="public" >
+			<notify listener="SecurityGuard" method="RemoveSessionVariables" />
+			<view-page name="user.logout" />
+		</event-handler>
+		
+		<!-- close account -->
+		<event-handler event="user.signoff" access="public">
+			<notify listener="Users" method="checkSignOffRequest" />
+			<event-arg name="options_footer" value="minimal" />
+			<view-page name="user.signoff" />
+		</event-handler>
+		
+		<!-- info about remote system -->
+		<event-handler event="info.remoteinfo" access="public" >
+			<event-arg name="skipLayoutEvent" value="true" />
+			<notify listener="RemoteServers" method="GetRemoteServerInfo" />
+			<view-page name="info.remoteinfo" />
+		</event-handler>
+		
+		<!-- charts info -->
+		<event-handler event="info.charts" access="public" >
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="PageContent" method="getChartsData" />
+			<view-page name="info.charts" />
+		</event-handler>	
+		
+		<event-handler event="info.newsfeed" access="public" >
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="Logger" method="GetLogItems" />
+			<view-page name="info.newsfeed" />
+		</event-handler>	
+		<event-handler access="public" event="visualinterface">
+			<event-arg name="layoutEvent" value="layout.simple.output" />			
+			<event-arg name="type" value="playlists" />
+			<notify listener="MediaItems" method="GetUserContentData" />			
+			<!--<event-arg name="type" value="playlists" />
+			<event-arg name="calculateitems" value="false" />
+			<notify listener="MediaItems" method="GetUserContentData" />-->
+			<view-page name="visualinterface" />
+		</event-handler>
+		
+		<!-- feedback -->
+		<event-handler event="info.service.feedbackform" access="public">
+			<view-page name="info.service.feedbackform" />			
+		</event-handler>
+		<event-handler event="info.service.about" access="public">
+			<notify listener="Logger" method="logSourceReferer" />
+			<view-page name="info.service.about" />			
+		</event-handler>
+		<event-handler event="info.service.faq" access="public">
+			<notify listener="Logger" method="logSourceReferer" />
+			<view-page name="info.service.faq" />			
+		</event-handler>		
+		<event-handler event="info.service.terms" access="public">
+			<notify listener="Logger" method="logSourceReferer" />
+			<view-page name="info.service.terms" />			
+		</event-handler>
+		<event-handler event="info.service.contact" access="public">
+			<notify listener="Logger" method="logSourceReferer" />
+			<view-page name="info.service.contact" />			
+		</event-handler>	
+		
+		<event-handler event="info.service.tour" access="public">
+			<notify listener="Logger" method="logSourceReferer" />
+			<view-page name="info.service.tour" />			
+		</event-handler>
+		
+		<!-- Logitech Squeezebox support -->
+		<event-handler event="public.info.squeezenetwork.setup" access="public">
+			<event-arg name="appkey" value="DDA79BD2-CAAE-9AA4-3FB1EC7A52249D88" />
+			<notify listener="RESTAPI" method="GetAllEnabledApplications" />
+			<notify listener="RESTAPI" method="CheckIssueRemoteKey" />			
+			<view-page name="service.setup.squeezenetwork" />			
+		</event-handler>
+		
+		<!-- dropbox setup info -->
+		<event-handler event="public.info.dropbox.setup" access="public">
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<view-page name="service.setup.dropbox" />
+		</event-handler>
+		
+		<!-- dropbox real setup -->
+		<event-handler event="service.dropbox.linkaccount" access="public">
+			<notify listener="RESTAPI" method="linkDropboxAccount" />
+			<view-page name="service.setup.dropbox.linkaccount" />
+		</event-handler>
+		
+		<!--  dropbox callback URL -->
+		<event-handler event="service.dropbox.linkaccount.callback" access="public">
+			<notify listener="RESTAPI" method="handleDropboxAuthFeedback" />
+			
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<view-page name="service.dropbox.linkaccount.callback" />
+		</event-handler>	
+		
+		<!-- initial scan -->
+		<event-handler event="service.dropbox.initialscan" access="public">
+			<notify listener="RESTAPI" method="performInitialScan" />
+			
+			<event-arg name="options_footer" value="minimal" />
+			<event-arg name="options_header" value="static" />
+			<view-page name="service.dropbox.initialscan" />
+		</event-handler>	
+				
+		
+		<!-- boxee support -->
+		<event-handler event="service.boxee.setup" access="public">
+			<event-arg name="appkey" value="7706ECA1-F205-9A74-1C41F00931943688" />
+			<notify listener="RESTAPI" method="GetAllEnabledApplications" />
+			<notify listener="RESTAPI" method="CheckIssueRemoteKey" />			
+			<view-page name="service.setup.boxee" />			
+		</event-handler>		
+		<event-handler event="info.service.welcome" access="public">
+			<notify listener="Logger" method="logSourceReferer" />
+			<notify listener="SecurityGuard" method="checkIsLoggedInRedirector" />
+			<view-page name="info.service.welcome" />			
+		</event-handler>	
+		
+		<event-handler event="info.service.api.requestkey" access="public">
+			<view-page name="info.service.api.requestkey" />				
+		</event-handler>
+				
+		<event-handler event="info.service.uploader.appinternal" access="public">
+			<event-arg name="layoutEvent" value="layout.iframe" />			
+			<view-page name="info.service.uploader.appinternal" />
+		</event-handler>					
+	
+		<!-- info page about upload -->
+		<event-handler event="info.upload" access="public" >
+			<notify listener="StorageManager" method="CheckStorageLimit" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="info.upload" />
+		</event-handler>
+		
+		<!-- incoming request for an SEO optimized page -->
+		<event-handler event="public.content.request">
+			<notify listener="Logger" method="logSourceReferer" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="PublicInfo" method="CheckPublicContentRequest" />
+			<view-page name="public.content.request.dump" />
+		</event-handler>
+		
+		<event-handler event="public.test">
+			<view-page name="public.content.request.dump" />
+		</event-handler>
+		
+		<!-- serve cached content -->
+		<event-handler event="public.content.serve.cached.content" access="private">
+			<view-page name="public.content.serve.cached.content" />
+		</event-handler>
+		
+		<!-- 
+			handler for incoming playlist display requests
+			
+			derived from public.content.request, so don't touch layoutEvent etc
+		 -->
+		<event-handler event="public.content.request.playlist" access="public">
+			<notify listener="PublicInfo" method="CheckPublicContentRequestPlaylist" />
+			<notify listener="MediaItems" method="GetPlaylistInformation" />
+			<view-page name="public.content.playlist" />
+		</event-handler>
+		
+		<!-- incoming artist page requests -->
+		<event-handler event="public.content.request.artist" access="private">
+			<notify listener="PublicInfo" method="CheckPublicContentRequestArtist" />
+			<notify listener="PublicInfo" method="getFurtherPublicArtistInformation" />
+			<view-page name="public.content.artist" />
+		</event-handler>
+		
+		<!-- 
+			internal abum page
+		 -->
+		<event-handler event="public.content.request.album" access="private">
+			<notify listener="PublicInfo" method="CheckPublicContentRequestAlbum" />
+			<notify listener="MusicBrainz" method="getPublicAlbumInformation" />
+			<view-page name="public.content.album" />
+		</event-handler>
+		
+		<!--  internal track page -->
+		<event-handler event="public.content.request.track" access="private">
+			<notify listener="PublicInfo" method="CheckPublicContentRequestTrack" />
+			<notify listener="MusicBrainz" method="getPublicTrackInformation" />
+			<view-page name="public.content.track" />
+		</event-handler>
+		
+		<!-- music content info -->
+		<event-handler event="music.content.info" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="PublicInfo" method="CheckMusicContentInfoRequest" />
+		</event-handler>
+		
+		<!-- Legacy: request for artist information -->
+		<event-handler event="music.content.info.artist" access="private">
+			<notify listener="PublicInfo" method="LegacyRedirectCheckPublicArtist" />
+		</event-handler>
+		
+		<!-- Legacy: request for track information -->
+		<event-handler event="music.content.info.track" access="private">
+			<notify listener="PublicInfo" method="LegacyRedirectCheckPublicTrack" />
+		</event-handler>
+		
+		<!-- Legacy: album information -->
+		<event-handler event="music.content.info.album" access="private">
+			<notify listener="PublicInfo" method="LegacyRedirectCheckPublicAlbum" />
+		</event-handler>		
+				
+		<!-- playlist info -->
+		<event-handler event="playlist.info" access="public">
+			<notify listener="PublicInfo" method="LegacyRedirectCheckPublicPlaylistInfo" />
+		</event-handler>
+
+		<!-- explore music -->
+		<event-handler event="music.explore" access="public">
+			<notify listener="PageContent" method="BuildExploreRecommendations" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />			
+			<view-page name="music.explore" />
+		</event-handler>	
+		
+		<event-handler event="users.explore" access="public">
+			<notify listener="Social" method="UsersExplore" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />			
+			<view-page name="users.explore" />
+		</event-handler>			
+		
+		<event-handler event="item.action" access="public">
+			<event-arg name="skipLayoutEvent" value="true" />
+			<view-page name="item.action"  />
+		</event-handler>
+		
+		
+		<!-- play file ... -->
+		<event-handler event="play.media" access="public">
+			<!-- deliver a max version with 128kb/sec! -->
+			<event-arg name="targetbitrate" value="128" />
+			<notify listener="Preference" method="getCustomWebStreamingBitrate" />
+			<!-- we deliver the file! -->			
+			<event-arg name="deliver_mode" value="true" />
+			<notify listener="MediaItems" method="GetMediaItem" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="play.media"  />
+		</event-handler>
+		
+		<!-- deliver file to client -->
+		<event-handler event="play.deliverfile" access="public">
+			<!-- deliver a max version with 128kb/sec! -->
+			<event-arg name="targetbitrate" value="128" />
+			<notify listener="Preference" method="getCustomWebStreamingBitrate" />
+			<!-- we deliver the file! -->			
+			<event-arg name="deliver_mode" value="true" />
+			<!-- get info -->
+			<notify listener="MediaItems" method="GetMediaItem" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="play.deliverfile"  />
+		</event-handler>
+		
+		<!-- output meta data for play item -->
+		<event-handler event="play.media.metainfo" access="public">
+			<notify listener="MediaItems" method="GetMediaItem" />
+			
+			<!-- load basic information, fans & tweets -->
+			<event-arg name="datatypes" value="basic,fans,tweets,image_strips,events" />
+			<notify listener="MediaItems" method="GetArtistInformation" />	
+			<notify listener="Comments" method="LoadComments" />
+			
+			<!-- get recommendations -->
+			<!-- <notify listener="MyStrands" method="GetTrackRecommendations" />-->
+			
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="play.media.metainfo"  />	
+		</event-handler>
+				
+		<!-- generate pseudo XML for playlists -->
+		<event-handler event="play.generateplaylistdata" access="public">
+			<event-arg name="skipLayoutEvent" value="true" />
+			<notify listener="MediaItems" method="ReturnPlaylistItems" />
+			<view-page name="data.syncdb" />
+		</event-handler>
+				
+		<!-- display a single dialog -->
+		<event-handler event="ui.simple.dialog" access="public">
+			<!-- by default, user iframe -->
+			<event-arg name="layoutEvent" value="layout.iframe" />
+			<notify listener="UIBGActions" method="CheckPreProcessBGAction" />
+			<notify listener="UIBGActions" method="CheckBGPageLayout" />
+			<notify listener="Social" method="LoadExternalSiteIDs" />
+			<notify listener="Social" method="GetFriendsList" />
+			<view-page name="ui.simple.dialog"  />
+		</event-handler>
+		
+		<!-- selector ... -->
+		<event-handler event="ui.selector" access="public">
+			<!-- by default, user iframe -->
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="MediaItems" method="GenerateSelectorInformation" />
+			<view-page name="ui.selector"  />
+		</event-handler>
+		
+		<!-- show playlist options ... -->
+		<event-handler event="ui.playlists.options" access="public">
+			<!-- by default, user iframe -->
+			<event-arg name="options" value="metainfoonly" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />	
+			<notify listener="MediaItems" method="ReturnPlaylistItems" />
+			<notify listener="MediaItems" method="GetPlaylistComments" />
+			<view-page name="ui.playlists.options"  />
+		</event-handler>	
+		
+		<event-handler event="ui.search" access="public">
+			<notify listener="MediaItems" method="PerformGlobalSearch" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />	
+			<view-page name="ui.search" />
+		</event-handler>			
+		
+		<!-- custom radio station creation on start page -->
+		<event-handler event="ui.customradio.createstation" access="public">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="MediaItems" method="DoCreateSmartPlaylist" />
+			<event-arg name="type" value="ui.customradio.createstation.done" />
+			<announce event="bgaction" copyEventArgs="true" />
+		</event-handler>
+		
+		<!-- create a smart playlist -->
+		<event-handler event="playlist.createsmartplist" access="public">
+			<notify listener="MediaItems" method="DoCreateSmartPlaylist" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="playlist.createsmartplist" />
+		</event-handler>
+		
+		<!-- welcome content on start -->
+		<event-handler event="ui.showwelcome" access="public">
+			<!-- return top rated playlist etc -->
+			<notify listener="PageContent" method="GetWelcomePageData" />		
+			<notify listener="Users" method="GetUserData" />
+			<notify listener="Users" method="checkExternalIdentifierData" />
+			<notify listener="StorageManager" method="CheckStorageLimit" />
+			<notify listener="Social" method="GetFriendsList" />
+			<event-arg name="filter_actions" value="100,110,620,601,802" />
+			<event-arg name="maxagedays" value="21" />
+			<notify listener="Logger" method="GetLogItems" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<view-page name="ui.dashboard"  />
+		</event-handler>
+		
+		<event-handler event="ui.test" access="public">
+			<notify listener="MediaItems" method="GetUserContentData" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="ui.test"  />
+		</event-handler>		
+		
+		<event-handler event="bgaction" access="public">
+			<notify listener="UIBgActions" method="CheckBGAction" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="ui.bgaction"  />
+		</event-handler>
+					
+		<!-- jobs running on the system -->
+		<event-handler event="jobs.exec" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="jobs.exec" />
+		</event-handler>
+				
+		<event-handler event="play.media.music" access="private">
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="play.media.music"  />
+		</event-handler>
+		
+		<!-- play youtube clip (public version) ... -->
+		<event-handler event="track.clip" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="track.clip"  />
+		</event-handler>
+				
+		<!-- default layout ... -->
+		<event-handler event="layout.main" access="private">
+			<view-page name="layout.main" />
+		</event-handler>
+		
+		<!-- winter 10 layout -->
+		<event-handler event="layout.w10" access="private">
+			<view-page name="layout.w10" />
+		</event-handler>
+		
+		<!-- iframe layout ... -->
+		<event-handler event="layout.iframe" access="private">
+			<view-page name="layout.iframe" />
+		</event-handler>
+		
+		<!-- simple basic layout without html around -->
+		<event-handler event="layout.simple.output" access="private">
+			<view-page name="layout.simple.output" />			
+		</event-handler>
+		
+		<!-- huge player (library) layout ... -->
+		<event-handler event="layout.library" access="private">
+			<view-page name="layout.library" />
+		</event-handler>
+		
+		<!-- server (remote streaming one) communication -->
+		<event-handler event="server.ping" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="RemoteServers" method="ReceiveServerPing" />
+			<view-page name="server.emptyresponse" />
+		</event-handler>
+		
+		<!-- server transmits the iTunes library -->
+		<event-handler event="server.transmit.library" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="RemoteServers" method="ReceiveLibraryDB" />
+			<view-page name="server.emptyresponse" />
+		</event-handler>
+		
+		<!-- upload status message -->
+		<event-handler event="server.upload.statusmsg" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="RemoteServers" method="UploadStatusMsg" />
+			<view-page name="server.emptyresponse" />
+		</event-handler>	
+		
+		
+		<event-handler event="public.deliver.ticket" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="StorageManager" method="getDownloadTicketInfo" />
+			<view-page name="public.deliver.ticket" />
+		</event-handler>
+				
+		<!-- widget module -->
+		<event-handler event="public.widget.simple" access="public">
+			<notify listener="Widget" method="CheckWidgetParameters" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="SecurityGuard" method="CheckPublicAccess" />
+			<!-- get entrykey -->
+			<notify listener="Users" method="GetUserEntrykeyByUsername" /> 
+			<notify listener="Users" method="GetUserProfile" /> 
+			<view-page name="public.widget.simple" />
+		</event-handler>
+		
+		<!-- email sig widet -->
+		<event-handler event="public.widget.lastplayed.image" access="public">
+			<notify listener="Widget" method="CheckWidgetParametersLastPlayedImage" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="public.widget.lastplayed.image" />
+		</event-handler>
+		
+		<!-- sync softwaer api -->
+		<event-handler access="public" event="public.api.sync.request">
+			<notify listener="RemoteServers" method="HandleAPISyncRequest" />
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="public.api.sync.request" />
+		</event-handler>
+		
+		<!-- API request -->
+		<event-handler access="public" event="public.api.rest.request">
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="RESTAPI" method="CheckRestRequest" />
+			<view-page name="public.api.rest.request" />
+		</event-handler>
+		
+		<!-- image cache -->
+		<event-handler event="public.imgcache" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="StorageManager" method="ImageCache" />
+			<view-page name="public.imgcache" />
+		</event-handler>
+		
+		<event-handler event="public.findartistimage" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="PageContent" method="FindArtistImage" />
+			<view-page name="public.findartistimage" />
+		</event-handler>	
+		
+		<event-handler event="public.findalbumimage" access="public">
+			<event-arg name="disableLayoutManager" value="true" />
+			<notify listener="PageContent" method="FindAlbumImage" />
+			<view-page name="public.findalbumimage" />
+		</event-handler>		
+		
+		<!-- boxee -->
+		<event-handler event="boxee.start" access="public">
+			<event-arg name="contentType" value="text/xml; charset=UTF-8" />
+			<event-arg name="layoutEvent" value="layout.simple.output" />
+			<notify listener="boxee" method="BoxeeStart"></notify>
+			<view-page name="boxee.start" />
+		</event-handler>
+		
+		<!-- exception ... -->
+		<event-handler event="exception" access="private">
+			<event-arg name="disableLayoutManager" value="true" />
+			<view-page name="exception"/>
+		</event-handler>
+	</event-handlers>
+	
+	
+	<!-- PAGE-VIEWS -->
+	<page-views>
+		<page-view name="showlibrary" page="/views/library/dsp_library.cfm" />
+		<page-view name="loginForm" page="/views/loginForm.cfm" />
+		<page-view name="exception" page="/views/exception.cfm"/>
+		<page-view name="mainMenu" page="/views/mainmenu.cfm" />
+		
+		<page-view name="home" page="/views/dashboard/dsp_home.cfm" />
+		
+		<!-- api -->
+		<page-view name="public.imgcache" page="/views/public/dsp_public.imgcache.cfm" />
+		<page-view name="public.api.sync.request" page="/views/api/sync/dsp_public.api.sync.request.cfm" />
+		<page-view name="public.api.rest.request" page="/views/api/rest/dsp_public.api.rest.request.cfm" />
+		<page-view name="public.deliver.ticket" page="/views/api/rest/dsp_public.deliver.ticket.cfm" />
+		<page-view name="public.findartistimage" page="/views/public/dsp_public.findartistimage.cfm" />
+		<page-view name="public.findalbumimage" page="/views/public/dsp_public.findalbumimage.cfm" />
+		
+		<!-- processing server park -->
+		<page-view name="remote.incoming.checkrequest" page="/views/remote/dsp_remote.incoming.checkrequest.cfm" />
+		<page-view name="remote.puid.calculated" page="/views/remote/dsp_remote.puid.calculated.cfm" />
+		
+		<!-- affiliate -->
+		<page-view name="public.aff.request" page="/views/public/affiliate/dsp_public.aff.request.cfm" />
+		
+		<!-- widgets -->
+		<page-view name="public.widget.simple" page="/views/api/widget/dsp_public.widget.simple.cfm" />
+		<page-view name="public.widget.lastplayed.image" page="/views/widgets/dsp_public.widget.lastplayed.image.cfm" />
+		
+		<!-- iTunes -->
+		<page-view name="public.info.iphone" page="/views/public/dsp_public.info.iphone.cfm" />
+		
+		<!-- ad -->
+		<page-view name="public.adframe" page="/views/ads/dsp_public.adframe.cfm" />
+		
+		<!-- boxee -->
+		<page-view name="boxee.start" page="/views/api/boxee/dsp_boxee.start.cfm" />
+		
+		<!-- squeezenetwork -->
+		<page-view name="service.setup.squeezenetwork" page="/views/api/sn/dsp_service.setup.squeezenetwork.cfm" />
+		
+		<!-- dropbox -->
+		<page-view name="service.setup.dropbox" page="/views/api/dp/dsp_service.setup.dropbox.cfm" />
+		<page-view name="service.setup.dropbox.linkaccount" page="/views/api/dp/dsp_service_link_account.cfm" />
+		<page-view name="service.dropbox.linkaccount.callback" page="/views/api/dp/dsp_service.dropbox.linkaccount.callback.cfm" />
+		<page-view name="service.dropbox.initialscan" page="/views/api/dp/dsp_service.dropbox.initialscan.cfm" />
+		
+		
+		<page-view name="visualinterface" page="/views/fun/dsp_visualinterface.cfm" />
+		
+		<!-- postcard etc -->
+		<page-view name="track.info" page="/views/info/dsp_track.info.cfm" />
+		<page-view name="public.info.status" page="/views/info/feed/dsp_public.info.status.cfm" />
+		<page-view name="public.info.jobs" page="/views/info/service/dsp_jobs.cfm" />
+				
+		<!-- new users -->
+		<page-view name="register.start" page="/views/register/dsp_register.start.cfm" />
+		<page-view name="register.do" page="/views/register/dsp_register.do.cfm" />
+		<page-view name="register.first.login" page="/views/register/dsp_register.first.login.cfm" />
+		<page-view name="register.externalsource.finish" page="/views/register/dsp_register.externalsource.finish.cfm" />
+		<page-view name="register.waiting.confirmation" page="/views/register/dsp_register.waiting.confirmation.cfm" />
+		<page-view name="register.confirmaccount" page="/views/register/dsp_register.confirmaccount.cfm" />
+		
+		<!-- layout pages -->
+		<page-view name="layout.main" page="/views/layout/layout.main.cfm" />
+		<page-view name="layout.iframe" page="/views/layout/layout.iframe.cfm" />
+		<page-view name="layout.library" page="/views/layout/layout.library.cfm" />
+		<page-view name="layout.mobile" page="/views/layout/layout.mobile.cfm" />
+		<page-view name="layout.libraryex" page="/views/layout/layout.libraryex.cfm" />
+		<page-view name="layout.simple.output" page="/views/layout/layout.simple.output.cfm" />
+		<page-view name="layout.w10" page="/views/layout/layout.w10.cfm" />
+		
+		<!-- sync / search -->
+		<page-view name="data.syncdb" page="/actions/act_sync_db.cfm" />
+		
+		<!-- generic info pages -->
+		<page-view name="info.remoteinfo" page="/views/info/dsp_info.remote.cfm" />
+		<page-view name="info.upload" page="/views/info/dsp_info.upload.cfm" />
+		<page-view name="info.charts" page="/views/info/dsp_info_charts.cfm" />
+		<page-view name="info.service.feedbackform" page="/views/info/service/dsp_info.service.feedbackform.cfm" />
+		<page-view name="info.service.about" page="/views/info/service/dsp_info.service.about.cfm" />
+		<page-view name="info.service.terms" page="/views/info/service/dsp_info.service.terms.cfm" />
+		<page-view name="info.service.faq" page="/views/info/service/dsp_info.service.faq.cfm" />
+		<page-view name="info.service.tour" page="/views/info/service/dsp_info.service.tour.cfm" />
+		
+		<page-view name="service.setup.boxee" page="/views/info/dsp_service.setup.boxee.cfm" />
+		<page-view name="info.service.welcome" page="/views/info/service/dsp_info.service.welcome.cfm" />
+		<page-view name="info.service.contact" page="/views/info/service/dsp_info.service.contact.cfm" />
+		<page-view name="info.service.api.requestkey" page="/views/info/service/dsp_info.service.api.requestkey.cfm" />
+		<page-view name="info.service.uploader.appinternal" page="/views/info/service/dsp_info.service.uploader.appinternal.cfm" />
+		<page-view name="info.newsfeed" page="/views/info/dsp_info.newsfeed.cfm" />
+				
+		<!-- pages without registration -->
+		<page-view name="user.info" page="/views/info/dsp_user.info.cfm" />
+		<page-view name="user.info.short" page="/views/info/dsp_user.info.short.cfm" />
+		<page-view name="user.api.requestremotekey" page="/views/user/api/dsp_user.api.requestremotekey.cfm" />
+		
+		<!-- play routine ... -->
+		<page-view name="play.media" page="/views/play/play.media.cfm" />
+		<page-view name="play.media.video" page="/views/play/play.media.video.cfm" />
+		<page-view name="play.media.music" page="/views/play/play.media.music.cfm" />
+		<page-view name="play.media.youtube" page="/views/play/play.media.youtube.cfm" />
+		<page-view name="play.deliverfile" page="/views/play/play.deliverfile.cfm" />
+		<page-view name="play.miniplayer" page="/views/play/play.miniplayer.cfm" />
+		<page-view name="play.generateplaylistdata" page="/views/play/play.generateplaylistdata.cfm" />
+		<page-view name="play.media.metainfo" page="/views/play/play.media.metainfo.cfm" />
+		
+		<!-- info routines -->
+		<page-view name="music.explore" page="/views/info/explore/dsp_music.explore.cfm" />
+		<page-view name="users.explore" page="/views/info/explore/dsp_users.explore.cfm" />
+		
+		<!-- new -->
+		<page-view name="public.content.playlist" page="/views/content/dsp_public.content.playlist.cfm" />
+		<page-view name="public.content.artist" page="/views/content/dsp_public.content.artist.cfm" />
+		<page-view name="public.content.album" page="/views/content/dsp_public.content.album.cfm" />
+		<page-view name="public.content.track" page="/views/content/dsp_public.content.track.cfm" />
+		
+		<!-- dump -->
+		<page-view name="public.content.request.dump" page="/views/content/dsp_public_content_dump.cfm" />
+		<page-view name="public.content.serve.cached.content" page="/views/content/dsp_public.content.serve.cached.content.cfm" />
+		
+		<!-- legacy actions ... -->
+		<page-view name="track.clip" page="/views/connect/dsp_track.clip.cfm" />
+		<page-view name="item.action" page="/views/actions/dsp_item.action.cfm" />
+		
+		<!-- upload media -->
+		<page-view name="media.upload" page="/views/media/dsp_upload_file.cfm" />
+		<page-view name="media.upload.webpage" page="/views/media/dsp_media.upload.webpage.cfm" />
+		<page-view name="media.lookupitem" page="/views/media/dsp_media.lookupitem.cfm" />
+		
+		<!-- edit tag -->
+		<page-view name="media.edittaginfo" page="/views/media/dsp_media.edittaginfo.cfm" />
+		<page-view name="media.autocorrect" page="/views/media/dsp_media.autocorrect.cfm" />
+		
+		<!-- remote actions from streaming server -->
+		<page-view name="server.emptyresponse" page="/views/remote/dsp_server.emptyresponse.cfm" />
+		
+		<!-- various user pages / dialogs -->
+		<page-view name="user.preferences" page="/views/user/dsp_user.preferences.cfm" />
+		<page-view name="user.preferences.changepassword" page="/views/user/dsp_user.preferences.changepassword.cfm" />
+		<page-view name="user.mobile" page="/views/user/dsp_user.mobile.cfm" />
+		<page-view name="user.preferences.addexternalid" page="/views/user/dsp_user.preferences.addexternalid.cfm" />
+		<page-view name="user.logout" page="/views/user/dsp_user.logout.cfm" />
+		<page-view name="user.social.fb.activate" page="/views/user/social/dsp_user.social.fb.activate.cfm" />
+		<page-view name="user.social.friends" page="/views/user/social/dsp_user.social.friends.cfm" />		
+		<page-view name="user.social.friends.edit" page="/views/user/social/dsp_user.social.friends.edit.cfm" />
+		<page-view name="user.social.friend" page="/views/user/social/dsp_user.social.friend.cfm" />
+		<page-view name="user.content.imageupload" page="/views/user/dsp_user.content.imageupload.cfm" />
+		
+		<page-view name="user.signoff" page="/views/user/signoff/dsp_user.signoff.cfm" />
+		
+		<!-- payment / upgrade -->
+		<page-view name="user.account.upgrade.select" page="/views/user/account/dsp_user.account.upgrade.select.cfm" />
+		<page-view name="user.account.upgrade" page="/views/user/account/dsp_user.account.upgrade.cfm" />
+		<page-view name="user.account.upgrade.confirmation" page="/views/user/account/dsp_user.account.upgrade.confirmation.cfm" />
+		<page-view name="user.account.upgrade.paypal.expresscheckout.details" page="/views/user/account/dsp_user.account.upgrade.paypal.expresscheckout.details.cfm" />
+		<page-view name="user.account.upgrade.paypal.expresscheckout.performpayment" page="/views/user/account/dsp_user.account.upgrade.paypal.expresscheckout.performpayment.cfm" />
+		<page-view name="user.account.upgrade.paypal.expresscheckout.failure" page="/views/user/account/dsp_user.account.upgrade.paypal.expresscheckout.failure.cfm" />
+		
+		
+		<!-- jobs -->
+		<page-view name="jobs.exec" page="/views/jobs/dsp_jobs.exec.cfm" />
+		
+		<!-- plist -->
+		<page-view name="playlist.createsmartplist" page="/views/playlists/dsp_playlist.createsmartplist.cfm" />
+		
+		<!-- various ui -->
+		<page-view name="ui.simple.dialog" page="/views/inc/inc_simple_dialog.cfm" />
+		<page-view name="ui.selector" page="/views/ui/dsp_ui.selector.cfm" />
+		<page-view name="ui.playlists.options" page="/views/ui/dsp_ui.playlists.options.cfm" />
+		<page-view name="ui.search" page="/views/ui/dsp_ui.search.cfm" />
+		<page-view name="ui.dashboard" page="/views/dashboard/dsp_dashboard.cfm" />
+		<page-view name="ui.bgaction" page="/views/inc/inc_bg_action.cfm" />
+		<page-view name="ui.login.success" page="/views/inc/dsp_ui.login.success.cfm" />
+		<page-view name="ui.test" page="/views/inc/dsp_ui.test.cfm" />
+		
+		<!-- rpx login -->
+		<page-view name="login.rpxnow.landing" page="/views/register/dsp_login.rpxnow.landing.cfm" />
+				
+	</page-views>
+	
+	<!-- PLUGINS -->
+	<plugins>
+		
+		
+		<!-- <plugin name="TracePlugin" type="MachII.plugins.TracePlugin">
+			<parameters>
+				<parameter name="traceMode" value="file" />
+				<parameter name="displayCommented" value="false" />
+				<parameter name="highlightLongTimings" value="20" />
+				<parameter name="fileName" value="tb-trace" />
+				<parameter name="suppressTraceArg" value="nolog" />
+				<parameter name="debugModeOnly" value="false" />
+			</parameters>
+		</plugin> -->
+		
+		<plugin name="layoutManager" type="MachII.plugins.layoutManager">
+			<parameters>
+				<parameter name="defaultLayoutEvent" value="layout.main" />
+				<parameter name="finalOutputKey" value="request.content.final" />
+				<parameter name="optimizeWhiteSpace" value="false" />
+			</parameters>
+		</plugin>
+		
+		<plugin name="LoginPlugin" type="MachII.plugins.LoginPlugin">
+			<parameters>
+				<parameter name="LoginFormEvent" value="showLoginForm" />
+				<!-- events where a login is not needed
+					
+					- login
+					- jobs
+					- signup
+					- public
+					
+					 -->
+				<parameter name="NonLoginEvents" value="showLoginForm,processLoginAttempt,jobs.*,remote.*,boxee.*,info*,login*,music.*,register.*,server.*,public.*,facebook.*,user.info,playlist.info,track.info,mobile.*" />
+				<parameter name="LoginVariable" value="session.loggedIn" />
+			</parameters>
+		</plugin>
+		
+		<plugin name="coldSpringPlugin" type="coldspring.machii.ColdspringPlugin">
+			<parameters>
+			
+				<!-- property name that the beanFactory will be stored in (in the mach-ii property manager)
+					 default: 'beanFactory' -->
+				<parameter name="beanFactoryPropertyName" value="beanFactory"/>
+				
+				<!-- mach-ii property name that holds the path to the coldspring config file 
+					 default: 'ColdSpringComponentsLocation' -->
+				<parameter name="configFilePropertyName" value="ColdSpringPropertyFilename"/>
+				
+				<!-- flag to indicate whether supplied config path is relative or absolute 
+					 default: false (absolute path) -->
+				<parameter name="configFilePathIsRelative" value="true"/>
+				
+				<!-- flag to indicate whether to resolve dependencies for listeners/filters/plugins 
+					 default: false -->
+				<parameter name="resolveMachiiDependencies" value="false"/>
+				
+				<!-- indicate a key to pull in a parent bean factory from the application scope
+					 default: false -->
+				<parameter name="parentBeanFactoryKey" value="serviceFactory"/>
+				
+				<parameter name="placeFactoryInApplicationScope" value="true"/> 
+				
+			</parameters>
+		</plugin>
+		
+	</plugins>
+
+</mach-ii>

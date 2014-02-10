@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer xsi:noNamespaceSchemaLocation="/transfer/resources/xsd/transfer.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 
+	This section defines how Objects
+	are cached in this system.
+	
+	It does not need to be set, as there are
+	default settings for caching.
+	 -->
+	
+	<objectCache>
+        <defaultcache>
+              <scope type="none" />
+        </defaultcache>
+    </objectCache> 
+	
+	<objectDefinitions>
+		<package name="artists">
+	  		<object name="artist" table="artist">
+	  			<id name="id" type="numeric" />
+	  			<property name="name" type="string" />
+	  			<property name="gid" type="string" />
+	  			<property name="page" type="numeric" />
+				<property name="begindate" type="string" />
+				<property name="enddate" type="string" />
+				<property name="sortname" type="string" />
+				<property name="namesimple" type="string" />
+	  		</object>
+	  				
+	  	</package>
+		<package name="alben">
+	  		<object name="album" table="album">
+	  			<id name="id" type="numeric" />
+	  			<property name="artist" type="numeric" />
+	  			<property name="gid" type="string" />
+	  			<property name="name" type="string" />
+	  			<property name="attributes" type="numeric" />
+	  		</object>
+	  		<object name="albummeta" table="albummeta">
+				<id name="id" type="numeric" />
+				<property name="firstreleasedate" type="string" />
+				<property name="coverarturl" type="string" />
+				<property name="asin" type="string" />
+			</object>
+			<object name="albumjoin" table="albumjoin">
+				<id name="id" type="numeric" />
+				<property name="album" type="numeric" />
+				<property name="track" type="numeric" />
+				<property name="sequence" type="numeric" />
+			</object>
+	  	</package>
+		<package name="tracks">
+			<object name="track" table="track">
+				<id name="id" type="numeric" />
+				<property name="artist" type="numeric" />
+				<property name="name" type="string" />
+				<property name="gid" type="string" />
+				<property name="length" type="numeric" />
+			</object>	
+				
+		</package>
+	</objectDefinitions>
+</transfer>

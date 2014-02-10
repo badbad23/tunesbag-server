@@ -1,0 +1,1 @@
+<cfset tmp = StructClear(Application) />

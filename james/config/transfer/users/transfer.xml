@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer xsi:noNamespaceSchemaLocation="/transfer/resources/xsd/transfer.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 
+	This section defines how Objects
+	are cached in this system.
+	
+	It does not need to be set, as there are
+	default settings for caching.
+	 -->
+	<objectDefinitions>
+		<package name="users">
+	  		<object name="user" table="users">
+	  			<id name="id" type="numeric" />
+	  			<property name="entrykey" type="UUID" />
+	  			<property name="username" type="string" />
+	  			<property name="pwd" type="string" />
+				<!-- 0 = default, 10 = S, 20 = M, 50 = L -->
+				<property name="accounttype" type="numeric" />
+	  			<property name="firstname" type="string" />
+	  			<property name="surname" type="string" />
+	  			<property name="email" type="string" />
+	  			<property name="city" type="string" />
+	  			<property name="zipcode" type="string" />
+	  			<property name="countryisocode" type="string" />
+	  			<property name="dt_created" type="date" />
+	  			<property name="sex" type="numeric" />
+				<property name="birthday" type="date" />
+				<property name="lang_id" type="string" />
+				<property name="online" type="numeric" />
+				<property name="dt_lastping" type="date" />
+			    <property name="source" type="string" />
+				<!-- profile -->
+				<property name="public_profile" type="numeric" />
+				<!-- facebook UID -->
+				<property name="fb_uid" type="string" />
+				<!-- picture (link) -->
+			    <property name="pic" type="string" />
+			    <property name="photoindex" type="numeric" />
+				<!-- background image -->
+				<property name="bgimage" type="string" />
+				<property name="about_me" type="string" />
+				<property name="music_preferences" type="string" />
+				<!-- invited by? -->
+				<property name="invitedbyuserkey" type="string" />
+				<!-- cell phone -->
+				<property name="cellphone_nr" type="string" />
+				<!-- confirmations -->
+				<property name="cellphone_confirmed" type="numeric" />
+				<property name="email_confirmed" type="numeric" />
+				<property name="homepage" type="string" />
+				<property name="rsslink" type="string" />
+				<property name="subscribed_newsletter" type="numeric" />
+				<!-- privacy -->
+				<property name="privacy_profile" type="numeric" />
+				<property name="privacy_playlists" type="numeric" />
+				<property name="privacy_newsfeed" type="numeric" />
+				<!-- various counters -->
+				<property name="libraryitemscount" type="numeric" />
+				<property name="playlistscount" type="numeric" />	
+				<property name="libraryitemstotalsize" type="numeric" />
+				<!-- unread shared items -->
+			    <property name="status_unreadshareditems" type="numeric" />
+				<property name="status_unreadmessages" type="numeric" />
+				<property name="status_openfriendshiprequests" type="numeric" />
+				<!-- list of artist ids (fans) -->
+				<property name="artistfanids" type="string" />
+				<!--  soundtrack of my life entrykey -->
+				<property name="somlplistkey" type="string" />
+				<!-- status -->
+				<property name="status" type="numeric" />
+				<property name="transactionUUID" type="string" />
+				<!-- <property name="dt_transaction_valid_until" type="date" />-->
+	  		</object>
+			<object name="quota" table="quota">
+				<id name="userkey" type="UUID" />
+				<property name="maxsize" type="numeric" />
+				<property name="currentsize" type="numeric" />
+				<!--  max size of one file (raw) -->
+				<property name="maxfilesize" type="numeric" />
+			</object>
+			<object name="invitation" table="invitations">
+				<id name="id" type="numeric" />
+				<property name="entrykey" type="string" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<!-- email adr -->
+				<property name="recipient" type="string" />
+				<!-- 0 = email -->
+				<property name="recipient_type" type="numeric" />
+				<property name="lang_id" type="string" />
+				<property name="customtext" type="string" />
+				<!-- accepted? -->
+				<property name="accepted" type="numeric" />
+				<property name="dt_accepted" type="date" />
+				<!-- number of invitations available (by default 1) -->
+				<property name="totalcount" type="numeric" />
+				<!-- still available -->
+				<property name="stillavailable" type="numeric" />
+			</object>
+			<object name="friend" table="friends">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="createdbyuserkey" type="string" />
+				<property name="otheruserkey" type="string" />
+				<property name="user1_id" type="numeric" />
+				<property name="user2_id" type="numeric" />	
+				<property name="dt_created" type="date" />
+				<property name="accesslibrary" type="numeric" />
+				<!-- source of friend ... 0 = simple friend; 1 = facebook -->
+				<property name="source" type="numeric" />
+				<property name="displayname" type="string" />
+				<property name="photourl" type="string" />
+				<!-- general music taste -->
+				<property name="taste" type="string" />
+				<!-- store the UID for sure again (if sourcesystem is different for e.g.) -->
+				<property name="facebook_id" type="string" />
+			</object>	
+			<object name="friendship_request" table="friendship_requests">
+				<id name="entrykey" type="UUID" />
+				<property name="createdbyuserkey" type="string" />
+				<property name="otheruserkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="customtext" type="string" />
+			</object>	
+	  	</package>
+		
+		
+		<!-- user preferences -->
+	  	<package name="userpreferences">
+	  		<object name="preference" table="preferences">
+	  			<id name="id" type="numeric" />
+	  			<property name="userkey" type="string" />
+	  			<property name="name" type="string" />
+	  			<property name="value" type="string" />
+	  			<property name="dt_created" type="date" />
+	  		</object>
+	  	</package>
+		
+		<!-- twitter, last.fm -->
+		<package name="external_services">
+			
+			<!-- external identifiers -->
+			<object name="users_externalidentifiers" table="users_externalidentifiers">
+				<id name="entrykey" type="string" />
+				<property name="provider" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="dt_lastlogin" type="date" />
+				<property name="identifier" type="string" />
+				<property name="source" type="string" />
+				<property name="userkey" type="string" />
+				<property name="provideddata" type="string" />
+			</object>
+			
+			<object name="siteids" table="3rdparty_ids">
+				<id name="entrykey" type="string" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="servicename" type="string" />
+				<property name="username" type="string" />
+				<property name="pwd" type="string" />
+				<property name="sessionid" type="string" />
+				<!-- error handling -->
+				<property name="isworking" type="numeric" />
+				
+				<!-- enabled? -->
+				<property name="enabled" type="numeric" />
+				<property name="usernotified" type="numeric" />
+				<property name="timesfailed" type="numeric" />
+				<property name="param1" type="string" />
+			</object>			
+		</package>
+		
+		<!-- various data -->
+		<package name="various">
+			<!-- http://27.org/isocountrylist/iso_country_list.sql -->
+			<object name="country" table="country">
+				<id name="iso" type="string" />
+				<property name="name" type="string" />
+				<property name="printable_name" type="string" />
+			</object>	
+			
+					
+		</package>
+		
+		<!-- API -->
+		<package name="apiapplications">
+			<object name="application" table="applications">
+				<id name="entrykey" type="UUID" />
+				<property name="appname" type="string" />
+				<property name="userkey" type="string" />
+				<property name="disabled" type="numeric" />
+				<property name="privileged" type="numeric" />
+			</object>
+			<!-- installed applications (including remotekey) -->
+			<object name="applications_installed" table="applications_installed">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="applicationkey" type="string" />
+				<property name="remotekey" type="string" />
+				<property name="source" type="string" />
+				<property name="dt_created" type="date" />
+			</object>
+		</package>
+		
+		<!-- shopping / payment -->
+		<package name="shop">
+			
+			<object name="paymentrequests" table="paymentrequests">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="ip" type="string" />
+				<property name="productgroup" type="string" />
+				<property name="productid" type="string" />
+				<property name="status" type="numeric" />
+				<property name="recurring" type="numeric" />
+				<property name="recurringdatestart" type="date" />
+				<property name="period" type="string" />
+				<property name="amount" type="numeric" />
+				<!-- can be 0 in case of a one time payment -->
+				<property name="initialamount" type="numeric" />
+				<property name="currencycode" type="string" />
+				<property name="httpresponse" type="string" />
+			</object>
+			<object name="paypalorderinformation" table="paypalorderinformation">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="paymentkey" type="string" />
+				<property name="currencycode" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="period" type="string" />
+				<property name="productgroup" type="string" />
+				<property name="productid" type="string" />
+				<property name="status" type="numeric" />
+				<property name="amt" type="numeric" />
+				<property name="profileid" type="string" />
+				<property name="profilestatus" type="string" />
+				<property name="dt_lastcheckprofile" type="date" />
+			</object>
+		</package>
+		
+		<!-- licencing stuff -->
+		<package name="licence">
+			<!-- default -->
+			<object name="featureset_defaults" table="featureset_defaults">
+				<id name="id" type="numeric" />
+				<property name="feature" type="string" />
+				<property name="action" type="string" />
+				<property name="enabled" type="numeric" />
+			</object>
+			<!-- custom -->
+			<object name="featureset_custom" table="featureset_custom">
+				<id name="id" type="numeric" />
+				<property name="feature" type="string" />
+				<property name="action" type="string" />
+				<property name="countrycode" type="string" />
+				<property name="accounttype" type="numeric" />
+				<property name="enabled" type="numeric" />
+			</object>
+		</package>
+		
+	</objectDefinitions>
+</transfer>

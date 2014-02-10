@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer xsi:noNamespaceSchemaLocation="/transfer/resources/xsd/transfer.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 
+	This section defines how Objects
+	are cached in this system.
+	
+	It does not need to be set, as there are
+	default settings for caching.
+	 -->
+	<objectCache>
+        <defaultcache>
+              <scope type="none" />
+        </defaultcache>
+    </objectCache> 
+    <objectDefinitions>
+		<package name="lastfm">
+			<object name="lastfm_similar_artists" table="lastfm_similar_artists">
+				<id name="id" type="numeric" />
+				<property name="matchpercent" type="numeric" />	
+				<property name="artistsource_mbid" type="numeric" />		
+				<property name="artistdest_mbid" type="numeric" />				
+			</object>
+	  	</package>
+		<!-- common information about artists and albums -->
+		<package name="commoninformation">
+			<object name="common_artist_information" table="common_artist_information">
+				<id name="artistid" type="numeric" />
+				<property name="artistimg" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="dt_lastupdate_lastfm" type="date" />
+				<property name="fans" type="numeric" />
+				<property name="upcomingevents" type="numeric" />
+				<property name="img_revision" type="numeric" />
+				<property name="bio_en" type="string" />
+			</object>
+			
+			<object name="flickrimages" table="flickrimages">
+				<id name="flickrid" type="numeric" />
+				<property name="username" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="userid" type="string" />
+				<property name="mbid" type="numeric" />
+				<property name="mbitemtype" type="numeric" />
+				<property name="size_large" type="string" />
+				<property name="furtherinfo" type="string" />
+				<property name="licence_type" type="numeric" />
+			</object>
+			
+			<object name="image_strips" table="image_strips">
+				<id name="id" type="numeric" />
+				<!--  id = artist id -->
+				<property name="mbid" type="numeric" />
+				<!--  2 = artist -->
+				<property name="mbtype" type="numeric" />
+				<!--  rev  -->
+				<property name="img_revision" type="numeric" />
+				<property name="dt_created" type="date" />
+				<property name="dt_updated" type="date" />
+				
+				<property name="copyrighthints" type="string" />
+				<property name="imgheight" type="string" />
+				<property name="imgwidth" type="numeric" />
+				<!-- JPG -->
+				<property name="imgformat" type="string" />
+				<!-- 0 = default, in future maybe 1 = animated etc -->
+				<property name="img_type" type="numeric" />
+				<!-- no of images -->
+				<property name="ImageCount" type="numeric" />
+			</object>
+			
+			<object name="common_album_information" table="common_album_information">
+				<id name="albumid" type="numeric" />
+				<property name="artwork" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="dt_lastupdate_lastfm" type="date" />
+				<property name="fans" type="numeric" />
+				<property name="artistid" type="numeric" />
+				<property name="artworkchecked" type="numeric" />
+				<property name="img_revision" type="numeric" />
+			</object>
+			
+			<!-- lyrics -->
+			<object name="lyrics" table="lyrics">
+				<id name="id" type="numeric" />
+				<property name="artist" type="string" />
+				<property name="name" type="string" />
+				<property name="content" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="source" type="string" />
+			</object>
+			
+			<!-- artist bios -->
+			<object name="artistbio" table="artistbio">
+				<id name="id" type="numeric" />
+				<property name="artist" type="string" />
+				<property name="mbid" type="numeric" />
+				<property name="mbgid" type="string" />
+				<property name="lang" type="string" />
+				<property name="summary" type="string" />
+				<property name="body" type="string" />
+				<property name="dt_lastupdate" type="date" />
+			</object>
+		</package>
+		<!-- events -->
+		<package name="events">
+			<object name="events" table="events">
+				<id name="entrykey" type="UUID" />
+				<property name="dt_created" type="date" />
+				<property name="source" type="string" />
+				<!-- name of event -->
+				<property name="name" type="string" />
+				<property name="mb_artistid" type="numeric" />
+				<!-- name of the artist -->
+				<property name="artist" type="string" />
+				<property name="venue_name" type="string" />
+				<property name="description" type="string" />
+				<property name="address" type="string" />
+				<property name="city" type="string" />
+				<property name="country" type="string" />
+				<property name="zipcode" type="string" />
+				<property name="url" type="string" />
+				<property name="start" type="date" />
+				<property name="LONGITUDE" type="string" />
+				<property name="LATITUDE" type="string" />
+			</object>	
+		</package>
+		<package name="cache">
+			<!-- twitter -->
+			<object name="twitterstream" table="twitterstream">
+				<id name="id" type="numeric" />
+				<property name="dt_created" type="date" />
+				<property name="twitterid" type="numeric" />
+				<property name="body" type="string" />
+				<property name="from_user" type="string" />
+				<property name="langcode" type="string" />
+				<property name="mb_artistid" type="numeric" />
+				<property name="profile_image_url" type="string" />
+			</object>	
+			<object name="twittersinceid" table="twittersinceid">
+				<id name="mb_artistid" type="numeric" />
+				<property name="sinceid" type="numeric" />
+				<property name="lastupdate" type="date" />
+			</object>
+		</package>
+		<package name="mbcustom">
+			<object name="albumcust" table="albumcust">
+	  			<id name="id" type="numeric" />
+	  			<property name="artist" type="numeric" />
+	  			<property name="gid" type="string" />
+	  			<property name="name" type="string" />
+	  			<property name="attributes" type="numeric" />
+	  		</object>	
+			<object name="artistcust" table="artistcust">
+	  			<id name="id" type="numeric" />
+	  			<property name="name" type="string" />
+	  			<property name="gid" type="string" />
+	  			<property name="page" type="numeric" />
+				<property name="begindate" type="string" />
+				<property name="enddate" type="string" />
+				<property name="sortname" type="string" />
+				<property name="namesimple" type="string" />
+	  		</object>	
+	  		<object name="trackcust" table="trackcust">
+				<id name="id" type="numeric" />
+				<property name="artist" type="numeric" />
+				<property name="name" type="string" />
+				<property name="gid" type="string" />
+				<property name="length" type="numeric" />
+			</object>		
+		</package>
+		<package name="seo">
+			<object name="seo_playlist_url_latest">
+				<id name="id" type="numeric" />
+				<property name="plist_id" type="numeric" />
+				<property name="plist_entrykey" type="string" />
+				<property name="revision" type="numeric" />
+				<property name="dt_lastupdate" type="date" />
+				<property name="href" type="string" />
+			</object>
+		</package>
+	</objectDefinitions>
+</transfer>

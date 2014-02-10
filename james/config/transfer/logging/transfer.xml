@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer xsi:noNamespaceSchemaLocation="/transfer/resources/xsd/transfer.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 
+	This section defines how Objects
+	are cached in this system.
+	
+	It does not need to be set, as there are
+	default settings for caching.
+	 -->
+	 
+	<objectCache>
+        <defaultcache>
+              <scope type="none" />
+        </defaultcache>
+    </objectCache> 
+	 
+	<objectDefinitions>
+		<package name="logging">
+	  		<object name="playeditems" table="playeditems">
+				<id name="entrykey" type="UUID" />
+	  			<property name="mediaitemkey" type="string" />
+	  			<property name="userkey" type="string" />
+	  			<property name="userid" type="numeric" />
+	  			<property name="ip" type="string" />
+				<property name="countryisocode" type="string" />
+	  			<property name="dt_created" type="date" />
+				<property name="dt_played_end" type="date" />
+				<property name="owntrack" type="numeric" />
+				<property name="secondsplayed" type="numeric" />
+				<property name="postprocessingdone" type="numeric" />
+				<!-- which app fired this event? -->
+				<property name="applicationkey" type="string" />
+				<!--  session key of the user -->
+				<property name="sessionkey" type="string" />
+				<!-- meta data of item (artist, album etc) -->
+				<property name="itemdata" type="string" />
+				<!-- full MB data -->
+				<property name="mb_artistid" type="numeric" />
+				<property name="mb_albumid" type="numeric" />
+		        <property name="mb_trackid" type="numeric" />
+				<!-- a preview play? -->
+				<property name="preview" type="numeric" />
+				<!-- context ... 0 = manually selected,
+					1 = autoselected by tb, 3 = plist, 4 = recommendation -->
+				<property name="context" type="numeric" />
+				<!--  licence of track -->
+				<property name="licence_type" type="numeric" />
+	  		</object>
+			<object name="userlogin" table="userlogins">
+				<id name="id" type="numeric" />
+				<property name="dt_created" type="date" />
+				<property name="userkey" type="string" />
+				<property name="ip" type="string" />
+				<property name="useragent" type="string" />
+				<property name="provider" type="string" />
+			</object>
+			<object name="lastfm_submit_data" table="lastfm_submit_data">
+				<id name="id" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="dt_played" type="date" />
+				<property name="artist" type="string" />
+				<property name="album" type="string" />
+				<property name="name" type="string" />
+				<property name="tracklen" type="numeric" />
+				<property name="handled" type="numeric" />				
+			</object>
+			<!-- behaviour tracking to strands -->
+			<object name="strands_submit_data" table="strands_submit_data">
+				<id name="id" type="numeric" />
+				<property name="username" type="string" />
+				<property name="dt_played" type="date" />
+				
+				<property name="handled" type="numeric" />	
+				<!-- type of action -->
+				<property name="action" type="numeric" />	
+				<!-- type of item -->
+				<property name="itemtype" type="numeric" />
+				<!-- entrykey of object, name of artist, playlist etc -->
+				<property name="mediaitemkey" type="string" />
+				<!-- hashed identifier of track -->
+				<property name="unique_identifier" type="string" />	
+				<property name="parameter" type="string" />
+			</object>	
+			<object name="streaming_convert_requests" table="streaming_convert_requests">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="mediaitemkey" type="string" />
+				<property name="convertdone" type="numeric" />
+				<property name="dt_created" type="date" />
+				<property name="format" type="string" />
+				<property name="bitrate" type="numeric" />
+				<property name="runtime" type="numeric" />
+				<!-- already accessed? -->
+				<property name="handled" type="numeric" />
+				<!-- read from cache (will be updated by streaming node)? -->
+				<property name="readfromcache" type="numeric" />
+				<property name="ip" type="string" />
+				<property name="http_location" type="string" />
+				<property name="streamingengine" type="string" />
+				<property name="seconds" type="numeric" />
+			</object>		
+			<!-- serverstat -->
+			<object name="serverstat" table="serverstat">
+				<id name="id" type="numeric" />
+				<property name="hostname" type="string" />
+				<property name="hostip" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="serverload" type="numeric" />
+				<property name="waiting_converting" type="numeric" />
+				<property name="waiting_s3upload" type="numeric" />
+				<property name="waiting_incoming" type="numeric" />
+				<property name="ffmpeg_processes" type="numeric" />
+				<!-- handling web traffic -->
+				<property name="iswebserver" type="numeric" />
+				<!--  handling streaming stuff -->
+				<property name="isstreaming" type="numeric" />
+				<!-- handling upload stuff -->
+				<property name="isuploading" type="numeric" />
+				<!-- country code of server -->
+				<property name="countrycode" type="string" />
+			</object>	
+			<!-- old versions of meta data -->
+			<object name="mediaitems_metadata_revisions" table="mediaitems_metadata_revisions">
+				<id name="id" type="numeric" />
+				<property name="dt_created" type="date" />
+				<property name="userkey" type="string" />
+				<property name="mediaitemkey" type="string" />
+				<property name="source" type="string" />
+				<property name="wddx" type="string" />
+			</object>	
+			<!--  shop -->
+			<object name="shoplog" table="shoplog">
+				<id name="id" type="numeric" />
+				<property name="dt_created" type="date" />
+				<property name="paymentkey" type="string" />
+				<property name="operation" type="string" />
+				<property name="logdata" type="string" />
+			</object>
+			<!-- log notify -->		
+			<object name="embed_notify">
+				<id name="id" type="numeric" />
+				<property name="entrykey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="plistkey" type="string" />
+				<property name="ip" type="string" />
+				<property name="location" type="string" />
+				<property name="source" type="string" />
+				<property name="useragent" type="string" />
+				<property name="widgetkey" type="string" />
+			</object>
+		</package>
+		<package name="api">
+			<object name="calls" table="apicalls_logging">
+				<id name="entrykey" type="UUID" />
+				<property name="applicationkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="userkey" type="string" />
+				<property name="requestname" type="string" />
+				<property name="runtime" type="numeric" />
+				<property name="errorno" type="numeric" />
+				<property name="params" type="string" />
+				<property name="ip" type="string" />
+			</object>
+			<object name="downloadtickets" table="downloadtickets">
+				<id name="id" type="numeric" />
+				<property name="entrykey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="filename" type="string" />
+				<property name="contenttype" type="string" />
+				<property name="ip" type="string" />
+			</object>
+			<!-- upload authentification keys -->
+			<object name="uploadauthkeys" table="uploadauthkeys">
+				<id name="id" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="runkey" type="string" />
+				<property name="authkey" type="string" />
+				<property name="ip" type="string" />
+				<property name="dt_created" type="date" />
+			</object>
+		</package>
+		<package name="logbook">
+			<object name="logitems" table="logbook">
+				<id name="id" type="numeric" />
+				<property name="entrykey" type="string" />
+				<!-- created by which user? -->
+				<property name="createdbyuserid" type="numeric" />
+				<property name="createdbyuserkey" type="string" />
+				<property name="createdbyusername" type="string" />
+				<!-- which action?
+					
+					0 = played item (song or playlist)
+					1 = added item
+					2 = edited item
+					4 = removed item
+					
+					100 = created playlist
+					101 = added items to playlist
+					102 = removed items from playlist
+					
+					110 = linked an playlist to his library
+					
+					500 = shared an item
+					
+					600 = added comment on media item
+					601 = added comment on playlist
+					610 = rating
+					620 = become a fan of an artist
+					
+					800 = send invitation
+					801 = accepted invitation
+					802 = friend added
+					
+					-->
+				<property name="action" type="numeric" />
+				<property name="dt_created" type="date" />
+				<!-- e.g. audiopostcards to users -->
+				<property name="private" type="numeric" />
+				<!-- which user is affected?
+					
+					e.g. A creates comment for user B item -->
+				<property name="affecteduserkey" type="string" />
+				<property name="affecteduserid" type="numeric" />
+				<!-- objectkey and it's title -->
+				<property name="linked_objectkey" type="string" />
+				<property name="objecttitle" type="string" />
+				<!-- e.g. the rating -->
+				<property name="param" type="string" />
+			</object>
+		</package>
+		<package name="affiliate">
+			<object name="affiliaterequests" table="affiliaterequests">
+				<id name="entrykey" type="UUID" />
+				<property name="applicationkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="device" type="string" />
+				<property name="artist" type="string" />
+				<property name="album" type="string" />
+				<property name="title" type="string" />
+				<property name="userkey" type="string" />
+				<property name="referer" type="string" />
+				<property name="vendor" type="numeric" />
+				<property name="ip" type="string" />
+			</object>
+		</package>
+		<package name="cache">
+			<!-- check when the real storage had to be contacted -->
+			<object name="storage_reads" table="storage_reads">
+				<id name="id" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="hashvalue" type="string" />
+				<property name="mediaitemkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="hits" type="numeric" />
+			</object>	
+			<!-- various information cache (e.g. last.fm data) -->
+			<object name="infocache" table="infocache">
+				<id name="entrykey" type="UUID" />
+				<property name="hashvalue" type="string" />
+				<property name="description" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="data" type="string" />
+				<property name="hostsystem" type="string" />
+				<property name="expiresmin" type="numeric" />
+			</object>	
+			<!-- temporary mapper between youtube ID and a dummy entrykey -->
+			<object name="youtube_id_temp_mapper" table="youtube_id_temp_mapper">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />	
+				<property name="youtube_id" type="string" />	
+				<property name="dt_created" type="date" />	
+				<!-- the yt username -->
+				<property name="username" type="string" />	
+				<property name="pagelink" type="string" />	
+				<property name="name" type="string" />	
+				<property name="artist" type="string" />
+				<property name="tags" type="string" />	
+			</object>
+			
+			<!-- rpxnow login information cache -->
+			<object name="rpxdatacache" table="rpxdatacache">
+				<id name="entrykey" type="UUID" />	
+				<property name="dt_created" type="date" />
+				<property name="rpxtoken" type="string" />
+				<property name="source" type="string" />
+				<property name="provider" type="string" />
+				<property name="identifier" type="string" />
+				<property name="complete_data" type="string" />	
+				<property name="unified_userdata" type="string" />
+			</object>
+			
+			<!-- skreemr results -->
+			<object name="skreemr_results" table="skreemr_results">
+				<id name="entrykey" type="UUID" />
+				<property name="hashvalue" type="string" />
+				<property name="skreemr_id" type="string" />
+				<property name="artist" type="string" />
+				<property name="album" type="string" />
+				<property name="name" type="string" />
+				<property name="href" type="string" />
+				<property name="duration" type="string" />
+				<property name="year" type="string" />				
+				<property name="host" type="string" />				
+				<property name="filename" type="string" />		
+				<property name="dt_created" type="date" />				
+				<property name="frequency" type="string" />				
+				<property name="bitrate" type="string" />																																			
+			</object>	
+		</package>
+	</objectDefinitions>
+</transfer>

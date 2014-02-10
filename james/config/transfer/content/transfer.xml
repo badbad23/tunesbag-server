@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer xsi:noNamespaceSchemaLocation="/transfer/resources/xsd/transfer.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- 
+	This section defines how Objects
+	are cached in this system.
+	
+	It does not need to be set, as there are
+	default settings for caching.
+	 -->
+	<objectCache>
+        <defaultcache>
+              <scope type="none" />
+        </defaultcache>
+    </objectCache> 
+	
+	<objectDefinitions>
+		<package name="libraries">
+			<object name="library" table="libraries">
+				<!-- libs -->
+				<id name="entrykey" type="UUID" />
+				<property name="name" type="string" />
+				<property name="description" type="string" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="type" type="numeric" />
+				<property name="source" type="string" />
+				<property name="remoteconnected" type="numeric" />
+				<!-- to check if something in the library has changed ... when different, reload items -->
+				<property name="lastkey" type="string" />
+			</object>
+		</package>
+		<package name="mediaitems">
+			<object name="mediaitem" table="mediaitems">
+				<!-- an itunes compatible database -->
+				<id name="entrykey" type="UUID" />
+				<property name="userid" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="librarykey" type="string" />
+				<property name="dt_created" type="date" />
+				<!-- storage of file 0 = S3 / cache, 2  = direct link, 3 = webdav (?) -->
+				<property name="storagetype" type="numeric" />
+				
+				<!-- hash value of this item: this is the hash value of the file itself -->
+				<property name="hashvalue" type="string" />
+				<!-- original hash value (in case the file has been converted) -->
+				<property name="originalfilehashvalue" type="string" />
+				<!-- the simple hash value of the media item ... see doc for explanation (artist + track + length) -->
+				<property name="metahashvalue" type="string" />
+				<!-- artist -->
+				<property name="artist" type="string" />
+				<property name="album" type="string" />
+				<property name="genre" type="string" />
+				<!-- title -->
+				<property name="name" type="string" />
+				<!-- track number -->
+				<property name="tracknumber" type="string" />
+				<property name="size" type="numeric" />
+				<property name="year" type="numeric" />
+				<property name="bitrate" type="numeric" />
+				<property name="samplerate" type="numeric" />
+				<property name="totaltime" type="numeric" />
+				<!-- created by which unit? empty by default -->
+				<property name="createdbyunit" type="string" />
+				<!-- source of file ... important for temporary youtube items 					
+					can be tb (tunesbag), stream (for podcasts) or yt for youtube ... -->
+				<property name="source" type="string" />
+				<!-- temporary ... will be set to true by virtual results ...
+					so that the program knows this item does not really exist in the databae -->
+				<property name="temporary" type="numeric" />
+				<!-- analyzed and checked if in MB database and such stuff? -->
+				<property name="analyzed" type="numeric" />
+				<!-- puid generated? -->
+				<property name="puid_generated" type="numeric" />
+				<!-- puid -->
+				<property name="puid" type="string" />
+				<!-- puid analyzed? 0 = no, -1 = could not decide which hit, -100 = no auto hit, 1 = OK, 10 = ignored for now -->
+				<property name="puid_analyzed" type="numeric" />
+				<!-- musicbrainz data -->
+				<property name="mb_artistid" type="numeric" />
+				<property name="mb_albumid" type="numeric" />
+				<property name="mb_trackid" type="numeric" />
+				<!-- match level -->
+				<property name="mb_matchlevel" type="numeric" />
+				<!-- licence type ... default = 0 = unknown
+						100 - 200 = CC
+						
+						http://en.wikipedia.org/wiki/Creative_Commons_licenses
+						
+						101 =  1. Attribution alone (by)
+						105 =   2. Attribution + Noncommercial (by-nc)
+						110 =   3. Attribution + NoDerivs (by-nd)
+						120 =  4. Attribution + ShareAlike (by-sa)
+						150 =  5. Attribution + Noncommercial + NoDerivs (by-nc-nd)
+						170 =  6. Attribution + Noncommercial + ShareAlike (by-nc-sa)
+						
+						 -->
+				<property name="licence_type" type="numeric" />
+				<!-- custom artwork available for this track? -->
+				<property name="customartwork" type="numeric" />
+			</object>
+			
+			<!-- further meta information -->
+			<object name="mediaitems_metainformation" table="mediaitems_metainformation">
+				<id name="mediaitemkey" type="string" />
+				<property name="format" type="string" />
+				<!-- format as int value (see app consts) -->
+				<property name="format_ID" type="string" />
+				<property name="location" type="string" />
+				<!-- itunes specific properties -->
+				<property name="iTunesPersistentID" type="string" />
+				<property name="iTunesTrackID" type="string" />
+ 			</object>
+			
+			<!-- how often accessed / played? -->
+			<object name="timesaccessed" table="timesaccessed">
+				<id name="id" type="numeric" />
+				<!-- itemkey (playlist or media item -->
+				<property name="mediaitemkey" type="string" />
+				<property name="mediaitem_id" type="numeric" />
+				<!-- item type; 0 = item, 1 = plist -->
+				<property name="itemtype" type="numeric" />
+				<property name="times" type="numeric" />
+				<property name="userid" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="lasttime" type="date" />
+			</object>
+			<!-- genrelist -->
+			<object name="genrelist" table="genrelist">
+				<id name="id" type="numeric" />
+				<property name="name" type="string" />
+				<property name="id3id" type="numeric" />
+			</object>	
+
+			<!-- object ratings -->
+			<object name="rating" table="ratings">
+				<id name="entrykey" type="UUID" />
+				<property name="mediaitemkey" type="string" />
+				<property name="mediaitemtype" type="string" />
+				<property name="userid" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<!-- NULL = unrated, 10 = hate it, 100 = like it (make it easy) -->
+				<property name="rating" type="numeric" />
+				<!-- hashvalue of the item -->
+				<property name="hashvalue" type="string" />
+				<!-- music brainz ID of the item -->
+				<property name="mbid" type="numeric" />
+				<property name="mediaitem_id" type="numeric" />
+			</object>		
+			
+			<!-- tags -->
+			<object name="tags" table="tags">
+				<id name="id" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="album" type="string" />
+				<property name="artistkey" type="string" />
+				<property name="albumkey" type="string" />
+				<property name="mediaitemkey" type="string" />
+				<property name="tags" type="string" />				
+			</object>
+						
+		</package>
+		<!-- store information -->
+		<package name="storage">
+			<object name="storageinformation" table="storageinformation">
+				<id name="id" type="numeric" />
+				<!-- hash value (unique) -->
+				<property name="hashvalue" type="string" />
+				<property name="userkey" type="string" />
+				<property name="mediaitemkey" type="string" />
+				<!-- created? -->
+				<property name="dt_created" type="date" />
+				<!-- last time requested -->
+				<property name="dt_lastrequested" type="date" />
+				<!-- cached locally copy? ( so no need to request file from AWS) -->
+				<property name="cached" type="numeric" />
+				<!-- 0 = AWS S3 -->
+				<property name="storagesystem" type="numeric" />
+				<!-- s3 specific data bucket name, path and filename 
+					e.g.
+					path = /88/d9/op/78/
+					filename = hashvalue
+					-->
+				<property name="s3_bucketname" type="string" />
+				<property name="s3_path" type="string" />
+				<property name="s3_filename" type="string" />
+			</object>			
+			<object name="storagecounters" table="storagecounters">
+				<id name="hashvalue" type="string" />
+				<property name="counter" type="numeric" />
+			</object>
+			<object name="uploaded_items_status" table="uploaded_items_status">
+				<id name="entrykey" type="UUID" />
+				<property name="dt_created" type="date" />
+				<property name="userkey" type="string" />
+				<property name="location" type="string" />
+				<property name="librarykey" type="string" />
+				<property name="handled" type="numeric" />
+				<!-- 0 = waiting, 1 = converting -->
+				<property name="status" type="numeric" />
+				<!-- error code when handling this item -->
+				<property name="handleerrorcode" type="numeric" />
+				<property name="priority" type="numeric" />
+				<property name="source" type="string" />
+				<!-- upload runkey -->
+				<property name="uploadrunkey" type="string" />
+				<!--  which host is handling this request? -->
+				<property name="hostid" type="string" />
+			</object>
+		</package>
+		<package name="converter">
+			<!-- reduce bitrate -->
+			<object name="convertjobs" table="convertjobs">
+				<id name="entrykey" type="string" />
+				<!-- operation: 1 = reduce bitrate; 2 = M4a2MP3, 3= WMA2MP3 -->
+				<property name="operation" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="sourcefile" type="string" />
+				<property name="destfile" type="string" />
+				<property name="targetbitrate" type="numeric" />
+				<property name="dt_created" type="date" />
+				<!-- started when? -->
+				<property name="dt_started" type="date" />
+				<property name="handled" type="numeric" />
+				<property name="done" type="numeric" />
+				<!-- the full sh script for the converter -->
+				<property name="shellscript" type="string" />
+				<property name="errorno" type="numeric" />
+				<property name="ffmpeglog" type="string" />
+			</object>
+		</package>
+		<package name="playlists">
+			<object name="playlist" table="playlists">
+				<id name="entrykey" type="UUID" />
+				<property name="id" type="numeric" />
+				<!--  0 = default, 1 = soundtrack of my life -->
+				<property name="specialtype" type="numeric" />
+				<property name="name" type="string" />
+				<property name="description" type="string" />
+				<property name="tags" type="string" />
+				<property name="userid" type="numeric" />
+				<property name="userkey" type="string" />
+				<property name="username" type="string" />
+				<property name="librarykey" type="string" />
+				<!-- temporary -->
+				<property name="istemporary" type="numeric" />
+				<!-- dynamic -->
+				<property name="dynamic" type="numeric" />
+				<property name="dynamic_criteria" type="string" />
+				<property name="public" type="numeric" />		
+				<!-- no of items -->
+				<property name="itemscount" type="numeric" />	
+				<!-- own items -->
+				<property name="ownitemscount" type="numeric" />	
+				<!-- items -->
+				<property name="items" type="string" />	
+				<property name="dt_created" type="date" />			
+				<property name="dt_lastmodified" type="date" />	
+				<property name="avgrating" type="numeric" />
+				<property name="hits" type="numeric" />
+				<property name="totaltime" type="numeric" />
+				<!-- an image available for this plist? -->
+				<property name="imageset" type="numeric" />
+				<!-- licence type ... default = 0 = unknown
+						100 - 200 = CC -->
+				<property name="licence_type" type="numeric" />
+				<!-- plist image licence ... 0 = default, 100 = CC -->
+				<property name="licence_type_image" type="numeric" />
+				<!--  link to source -->
+				<property name="licence_image_link" type="string" />
+				<!-- source of plist (e.g. 8tracks) -->
+				<property name="source_service" type="numeric" />
+				<!-- identifier in the external service -->
+				<property name="external_identifier" type="string" />
+			</object>	
+			<object name="playlist_item" table="playlist_items">
+				<id name="id" type="numeric" />
+				<property name="entrykey" type="string" />
+				<property name="librarykey" type="string" />
+				<property name="playlistkey" type="string" />
+				<property name="mediaitemkey" type="string" />
+				<property name="mediaitemid" type="numeric" />
+				<property name="playlistid" type="numeric" />
+				<property name="dt_added" type="date" />
+				<property name="orderno" type="numeric" />
+			</object>
+			<!-- auto add items (waiting) -->
+			<object name="autoaddplist" table="autoaddplist">
+				<id name="id" type="numeric" />
+				<property name="playlistkey" type="string" />
+				<property name="hashvalue" type="string" />				
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />								
+			</object>
+			<!-- playlists of other users displayed in our list -->
+			<object name="linked_playlists" table="linked_playlists">
+				<id name="entrykey" type="UUID" />
+				<property name="playlistkey" type="string" />
+				<property name="playlist_ID" type="numeric" />
+				<property name="createdbyuserkey" type="string" />				
+				<property name="playlistuserkey" type="string" />
+				<property name="dt_created" type="date" />	
+			</object>
+		</package>
+		<!-- podcasts -->
+		<package name="podcasts">
+			<object name="podcast" table="podcasts">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="librarykey" type="string" />
+				<property name="name" type="string" />
+				<property name="lang_id" type="string" />
+				<property name="rssurl" type="string" />
+				<property name="description" type="string" />
+				<property name="imglink" type="string" />
+				<property name="category" type="string" />
+				<property name="dt_lastepisode" type="date" />
+				<property name="dt_created" type="date" />
+			</object>			
+		</package>
+		<package name="comments">
+			<object name="comment" table="comments">
+				<id name="entrykey" type="UUID" />
+				<property name="dt_created" type="date" />
+				<property name="createdbyuserkey" type="string" />
+				<property name="createdbyusername" type="string" />
+				<property name="comment" type="string" />
+				<!-- if available ... hashvalue of linked object -->
+				<property name="linked_object_hashvalue" type="string" />
+				<!-- objectkey -->
+				<property name="linked_objectkey" type="string" />
+				<!-- item type
+					0 = music
+					1 = playlist
+					99 = user
+					-->
+				<property name="linked_object_type" type="numeric" />
+				<property name="linked_objecttitle" type="string" />
+				<property name="linked_object_artist" type="string" />
+				<property name="linked_object_album" type="string" />
+				<property name="linked_object_name" type="string" />
+				<!-- owner userkey -->
+				<property name="affecteduserkey" type="string" />
+				<property name="rating" type="numeric" />
+				<property name="tags" type="string" />
+			</object>
+		</package>
+		<package name="messages">
+			<!-- messages between users -->
+			<object name="message" table="messages">
+				<id name="entrykey" type="UUID" />
+				<property name="userkey" type="string" />
+				<property name="dt_created" type="date" />
+				<property name="userkey_from" type="string" />
+				<property name="userkey_to" type="string" />
+				<property name="subject" type="string" />
+				<property name="body" type="string" />
+				<property name="linked_objectkey" type="string" />
+				<property name="status_read" type="numeric" />
+			</object>
+		</package>
+		<package name="quiz">
+			<object name="quiz" table="quiz">
+				<id name="entrykey" type="UUID" />
+				
+				
+			</object>	
+			<object name="takenquiz" table="takenquiz">
+				<id name="entrykey" type="UUID" />
+				<property name="dt_created" type="date" />
+				<property name="userkey" type="string" />
+				<property name="quizkey" type="string" />				
+			</object>	
+			<object name="quizanswers" table="takenquiz">
+				<id name="entrykey" type="UUID" />
+				<property name="dt_created" type="date" />
+				<property name="quizkey" type="string" />
+				<property name="takenquizkey" type="string" />
+				<property name="userkey" type="string" />
+				<property name="correct" type="numeric" />	
+				<property name="taken" type="string" />
+				<property name="correct_data" type="string" />			
+			</object>	
+		</package>
+		<package name="social">
+			<object name="shareditems" table="shareditems">
+				<id name="entrykey" type="UUID" />
+				<property name="dt_created" type="date" />
+				<property name="createdbyuserkey" type="string" />
+				<property name="identifier" type="string" />				
+				<property name="recipients" type="string" />				
+				<property name="itemtype" type="numeric" />
+				<property name="comment" type="string" />
+				<property name="title" type="string" />	
+				<property name="description" type="string" />	
+				<property name="href" type="string" />	
+			</object>	
+			<object name="shareditems_autoplist" table="shareditems_autoplist">
+				<id name="id" type="numeric" />
+				<property name="sharekey" type="string" />
+				<property name="userkey" type="string" />
+			</object>
+		</package>
+		<package name="recommendations">
+		</package>
+		<package name="news">
+			<object name="newsfeed" table="newsfeeds">
+				<id name="entrykey" type="UUID" />
+				<property name="name" type="string" />
+				<property name="description" type="string" />
+				<property name="feedurl" type="string" />
+				<property name="lang_id" type="string" />
+				<property name="dt_lastcheck" type="date" />
+			</object>			
+		</package>
+		<!-- relations within the system -->
+		<package name="relations">
+			<!-- user to library -->
+			<object name="rel_user_library" table="rel_user_library">
+				<id name="id" type="numeric" />
+				<property name="user_id" type="numeric" />
+				<property name="library_id" type="numeric" />
+			</object>
+			<!-- user to playlist -->
+			<object name="rel_user_playlist" table="rel_user_playlist">
+				<id name="id" type="numeric" />
+				<property name="user_id" type="numeric" />
+				<property name="playlist_id" type="numeric" />
+			</object>
+			<object name="rel_library_playlist" table="rel_library_playlist">
+				<id name="id" type="numeric" />
+				<property name="library_id" type="numeric" />
+				<property name="playlist_id" type="numeric" />
+			</object>
+			<!-- user to media item -->
+			<object name="rel_user_mediaitem" table="rel_user_mediaitem">
+				<id name="id" type="numeric" />
+				<property name="user_id" type="numeric" />
+				<property name="mediaitem_id" type="numeric" />
+			</object>
+			<!-- library to mediaitem -->
+			<object name="rel_library_mediaitem" table="rel_library_mediaitem">
+				<id name="mediaitem_id" type="numeric" />
+				<property name="library_id" type="numeric" />
+			</object>			
+			<!--  user to user -->
+			<object name="rel_user_user" table="rel_user_user">
+				<id name="id" type="numeric" />
+				<property name="user1_id" type="numeric" />
+				<property name="user2_id" type="numeric" />			
+			</object>	
+		</package>
+	</objectDefinitions>
+</transfer>
