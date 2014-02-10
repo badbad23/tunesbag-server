@@ -130,10 +130,10 @@
 	<bean id="WidgetComponent" class="james.cfc.api.widget" />
 	
 	<bean id="FacebookFBMLComponent" class="james.cfc.social.facebookfbml">
-		<constructor-arg name="apiKey"><value>845ab6a56a4d53c1da0e88d4dfd261ea</value></constructor-arg>
-		<constructor-arg name="secret"><value>bef27bc6827699644b3a87b7790bf3d7</value></constructor-arg>
-		<constructor-arg name="url"><value>http://apps.facebook.com/tunesbagdev/</value></constructor-arg>
-		<constructor-arg name="callbackUrl"><value>http://83.64.213.25:8030/james/tests/fbapp/</value></constructor-arg>
+		<constructor-arg name="apiKey"><value>xxx</value></constructor-arg>
+		<constructor-arg name="secret"><value>xxxx</value></constructor-arg>
+		<constructor-arg name="url"><value>http://apps.facebook.com/xxx/</value></constructor-arg>
+		<constructor-arg name="callbackUrl"><value>http://domain/james/tests/fbapp/</value></constructor-arg>
 	</bean>
 	
 	<!--  flickr -->
