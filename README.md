@@ -3,5 +3,5 @@ tunesbag-server
 
 Cloud music player for your own collection - upload 
 
-Setup
+<h4>Setup</h4>
 == 
